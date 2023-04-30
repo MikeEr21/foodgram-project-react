@@ -13,8 +13,6 @@ class IngredientModelTests(TestCase):
         )
         self.assertEqual(str(ingredient), 'Test Ingredient, Test Unit.')
 
-    # Add more tests for Ingredient model
-
 
 class TagModelTests(TestCase):
     def test_str_representation(self):
@@ -24,8 +22,6 @@ class TagModelTests(TestCase):
             slug='test-tag'
         )
         self.assertEqual(str(tag), 'Test Tag')
-
-    # Add more tests for Tag model
 
 
 class RecipeModelTests(TestCase):
@@ -44,8 +40,6 @@ class RecipeModelTests(TestCase):
             cooking_time=5,
         )
         self.assertEqual(str(recipe), f'{self.user.email}, Test Recipe')
-
-    # Add more tests for Recipe model
 
 
 class SubscribeModelTests(TestCase):
@@ -79,7 +73,6 @@ class FavoriteRecipeModelTests(TestCase):
             email='testuser@example.com',
             password='testpassword'
         )
-
         self.recipe = Recipe.objects.create(
             author=self.user,
             name='Test Recipe',
@@ -103,14 +96,12 @@ class ShoppingCartModelTests(TestCase):
             email='testuser@example.com',
             password='testpassword'
         )
-
         self.recipe = Recipe.objects.create(
             author=self.user,
             name='Test Recipe',
             text='Test Text',
             cooking_time=5,
         )
-
         try:
             self.shopping_cart = ShoppingCart.objects.get(user=self.user)
         except ShoppingCart.DoesNotExist:
@@ -161,9 +152,11 @@ class RecipeIngredientModelTest(TestCase):
     def test_help_text(self):
         expected = 'Количество ингредиента в блюде'
         self.assertEqual(
-            RecipeIngredient._meta.get_field('amount').help_text, expected)
+            RecipeIngredient._meta.get_field('amount').help_text, expected
+        )
 
     def test_unique_constraint(self):
         with self.assertRaises(Exception):
             RecipeIngredient.objects.create(
-                recipe=self.recipe, ingredient=self.ingredient, amount=3)
+                recipe=self.recipe, ingredient=self.ingredient, amount=3
+            )
