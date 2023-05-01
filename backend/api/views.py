@@ -1,53 +1,28 @@
 import io
 
 from django.contrib.auth import get_user_model
-from django.contrib.auth.hashers import make_password
 from django.db.models.aggregates import Count, Sum
 from django.db.models.expressions import Exists, OuterRef, Value
 from django.http import FileResponse
 from django.shortcuts import get_object_or_404
-from djoser.views import UserViewSet
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.pdfgen import canvas
 from rest_framework import generics, status, viewsets
-from rest_framework.authtoken.models import Token
-from rest_framework.authtoken.views import ObtainAuthToken
-from rest_framework.decorators import action, api_view
-from rest_framework.permissions import (SAFE_METHODS, AllowAny,
-                                        IsAuthenticated,
+from rest_framework.decorators import action
+from rest_framework.permissions import (SAFE_METHODS, IsAuthenticated,
                                         IsAuthenticatedOrReadOnly)
 from rest_framework.response import Response
 
 from api.filters import IngredientFilter, RecipeFilter
-from api.permissions import IsAdminOrReadOnly
-from recipes.models import (FavoriteRecipe, Ingredient, Recipe, ShoppingCart,
-                            Subscribe, Tag)
-
+from api.mixins import GetObjectMixin, PermissionAndPaginationMixin
 from api.serializers import (IngredientSerializer, RecipeReadSerializer,
-                          RecipeWriteSerializer, SubscribeRecipeSerializer,
-                          SubscribeSerializer, TagSerializer, TokenSerializer,
-                          UserCreateSerializer, UserListSerializer,
-                          UserPasswordSerializer)
+                             RecipeWriteSerializer, SubscribeSerializer,
+                             TagSerializer)
+from recipes.models import (FavoriteRecipe, Ingredient, Recipe, ShoppingCart,
+                            Tag)
 
 User = get_user_model()
-FILENAME = 'shoppingcart.pdf'
-
-
-class GetObjectMixin:
-    serializer_class = SubscribeRecipeSerializer
-    permission_classes = (AllowAny,)
-
-    def get_object(self):
-        recipe_id = self.kwargs['recipe_id']
-        recipe = get_object_or_404(Recipe, id=recipe_id)
-        self.check_object_permissions(self.request, recipe)
-        return recipe
-
-
-class PermissionAndPaginationMixin:
-    permission_classes = (IsAdminOrReadOnly,)
-    pagination_class = None
 
 
 class AddAndDeleteSubscribe(
@@ -71,20 +46,6 @@ class AddAndDeleteSubscribe(
         user = get_object_or_404(User, id=user_id)
         self.check_object_permissions(self.request, user)
         return user
-
-    def create(self, request, *args, **kwargs):
-        instance = self.get_object()
-        if request.user.id == instance.id:
-            return Response(
-                {'errors': 'На самого себя нельзя подписаться!'},
-                status=status.HTTP_400_BAD_REQUEST)
-        if request.user.follower.filter(author=instance).exists():
-            return Response(
-                {'errors': 'Подписка уже оформлена!'},
-                status=status.HTTP_400_BAD_REQUEST)
-        subs = request.user.follower.create(author=instance)
-        serializer = self.get_serializer(subs)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     def perform_destroy(self, instance):
         self.request.user.follower.filter(author=instance).delete()
@@ -118,60 +79,6 @@ class AddDeleteShoppingCart(
 
     def perform_destroy(self, instance):
         self.request.user.shopping_cart.recipe.remove(instance)
-
-
-class AuthToken(ObtainAuthToken):
-    serializer_class = TokenSerializer
-    permission_classes = (AllowAny,)
-
-    def post(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        user = serializer.validated_data['user']
-        token, created = Token.objects.get_or_create(user=user)
-        return Response(
-            {'auth_token': token.key},
-            status=status.HTTP_201_CREATED
-        )
-
-
-class UsersViewSet(UserViewSet):
-    serializer_class = UserListSerializer
-    permission_classes = (IsAuthenticated,)
-
-    def get_queryset(self):
-        return User.objects.annotate(
-            is_subscribed=Exists(
-                self.request.user.follower.filter(
-                    author=OuterRef('id'))
-            )
-        ).prefetch_related(
-                'follower', 'following'
-        ) if self.request.user.is_authenticated else User.objects.annotate(
-            is_subscribed=Value(False)
-        )
-
-    def get_serializer_class(self):
-        if self.request.method.lower() == 'post':
-            return UserCreateSerializer
-        return UserListSerializer
-
-    def perform_create(self, serializer):
-        password = make_password(self.request.data['password'])
-        serializer.save(password=password)
-
-    @action(
-        detail=False,
-        permission_classes=(IsAuthenticated,)
-    )
-    def subscriptions(self, request):
-        user = request.user
-        queryset = Subscribe.objects.filter(user=user)
-        pages = self.paginate_queryset(queryset)
-        serializer = SubscribeSerializer(
-            pages, many=True,
-            context={'request': request})
-        return self.get_paginated_response(serializer.data)
 
 
 class RecipesViewSet(viewsets.ModelViewSet):
@@ -213,6 +120,7 @@ class RecipesViewSet(viewsets.ModelViewSet):
         permission_classes=(IsAuthenticated,)
     )
     def download_shopping_cart(self, request):
+        filename = 'shoppingcart.pdf'
         buffer = io.BytesIO()
         page = canvas.Canvas(buffer)
         pdfmetrics.registerFont(TTFont('Vera', 'Vera.ttf'))
@@ -242,7 +150,7 @@ class RecipesViewSet(viewsets.ModelViewSet):
             page.save()
             buffer.seek(0)
             return FileResponse(
-                buffer, as_attachment=True, filename=FILENAME
+                buffer, as_attachment=True, filename=filename
             )
         page.setFont('Vera', 24)
         page.drawString(
@@ -252,7 +160,7 @@ class RecipesViewSet(viewsets.ModelViewSet):
         )
         page.save()
         buffer.seek(0)
-        return FileResponse(buffer, as_attachment=True, filename=FILENAME)
+        return FileResponse(buffer, as_attachment=True, filename=filename)
 
 
 class TagsViewSet(
@@ -270,21 +178,3 @@ class IngredientsViewSet(
     queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer
     filterset_class = IngredientFilter
-
-
-@api_view(['post'])
-def set_password(request):
-    serializer = UserPasswordSerializer(
-        data=request.data,
-        context={'request': request}
-    )
-    if serializer.is_valid():
-        serializer.save()
-        return Response(
-            {'message': 'Пароль изменён!'},
-            status=status.HTTP_201_CREATED
-        )
-    return Response(
-        {'error': 'Введите верные данные!'},
-        status=status.HTTP_400_BAD_REQUEST
-    )
