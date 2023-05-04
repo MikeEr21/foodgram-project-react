@@ -1,6 +1,7 @@
 # Дипломный проект FOODGRAM.
 
 ![Deploy_badge](https://img.shields.io/github/actions/workflow/status/MikeEr21/foodgram-project-react/foodgram?logo=github&logoColor=%2300ff00)
+[![foodgram-project-react workflow](https://github.com/MikeEr21/foodgram-project-react/actions/workflows/foodgram.yml/badge.svg)](https://github.com/MikeEr21/foodgram-project-react/actions/workflows/foodgram.yml)
 
 ### Технологии
 * Python 3.7
