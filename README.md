@@ -1,7 +1,8 @@
 # Дипломный проект FOODGRAM.
 
-![Deploy_badge](https://img.shields.io/github/actions/workflow/status/MikeEr21/foodgram-project-react/foodgram?logo=github&logoColor=%2300ff00)
-[![foodgram-project-react workflow](https://github.com/MikeEr21/foodgram-project-react/actions/workflows/foodgram.yml/badge.svg)](https://github.com/MikeEr21/foodgram-project-react/actions/workflows/foodgram.yml)
+[//]: # (![Deploy_badge]&#40;https://img.shields.io/github/actions/workflow/status/MikeEr21/foodgram-project-react/foodgram?logo=github&logoColor=%2300ff00&#41;)
+
+[//]: # ([![foodgram-project-react workflow]&#40;https://github.com/MikeEr21/foodgram-project-react/actions/workflows/foodgram.yml/badge.svg&#41;]&#40;https://github.com/MikeEr21/foodgram-project-react/actions/workflows/foodgram.yml&#41;)
 
 ### Технологии
 * Python 3.7
