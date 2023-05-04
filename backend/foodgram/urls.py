@@ -16,5 +16,5 @@ urlpatterns = [
             template_name='openapi-schema.yml',
             content_type='application/x-yaml'
         ), name='openapi-schema'
-        ),
+    ),
 ]
