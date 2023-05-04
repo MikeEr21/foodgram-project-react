@@ -1,38 +1,25 @@
 import io
 
+from api.filters import IngredientFilter, RecipeFilter
+from api.mixins import GetObjectMixin, PermissionAndPaginationMixin
+from api.serializers import (IngredientSerializer, RecipeReadSerializer,
+                             RecipeWriteSerializer, SubscribeSerializer,
+                             TagSerializer)
 from django.contrib.auth import get_user_model
 from django.db.models.aggregates import Count, Sum
 from django.db.models.expressions import Exists, OuterRef, Value
 from django.http import FileResponse
 from django.shortcuts import get_object_or_404
+from recipes.models import (FavoriteRecipe, Ingredient, Recipe, ShoppingCart,
+                            Tag)
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.pdfgen import canvas
 from rest_framework import generics, status, viewsets
 from rest_framework.decorators import action
-from rest_framework.permissions import (
-    SAFE_METHODS,
-    IsAuthenticated,
-    IsAuthenticatedOrReadOnly
-)
+from rest_framework.permissions import (SAFE_METHODS, IsAuthenticated,
+                                        IsAuthenticatedOrReadOnly)
 from rest_framework.response import Response
-
-from api.filters import IngredientFilter, RecipeFilter
-from api.mixins import GetObjectMixin, PermissionAndPaginationMixin
-from api.serializers import (
-    IngredientSerializer,
-    RecipeReadSerializer,
-    RecipeWriteSerializer,
-    SubscribeSerializer,
-    TagSerializer
-)
-from recipes.models import (
-    FavoriteRecipe,
-    Ingredient,
-    Recipe,
-    ShoppingCart,
-    Tag
-)
 
 User = get_user_model()
 
