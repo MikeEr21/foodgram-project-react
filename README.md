@@ -13,7 +13,7 @@
 
 - Применить миграции
 ```
-sudo docker-compose exec web python manage.py migrate
+sudo docker-compose exec backend python manage.py migrate
 ```
 - Загрузить статику
 ```
@@ -29,11 +29,11 @@ sudo docker-compose exec backend python manage.py loaddata ./data/fixtures.json
 ```
 ### Проверка работоспособности приложения: перейти на страницу:
 ```
-http://localhost/admin/
+http://158.160.43.179/admin/
 ```
 ### Документация:
 ```
-http://localhost/redoc/
+http://158.160.43.179/redoc/
 ```
 ### Автор
 Михаил Ермолаев
