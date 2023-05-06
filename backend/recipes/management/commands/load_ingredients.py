@@ -15,5 +15,7 @@ class Command(BaseCommand):
             encoding='utf-8'
         ) as file:
             reader = csv.DictReader(file)
-            Ingredient.objects.bulk_create(Ingredient(name=row['name'], unit=row['unit']) for row in reader)
+            Ingredient.objects.bulk_create(
+                Ingredient(name=row['name'], unit=row['unit']) for row in reader
+            )
         self.stdout.write(self.style.SUCCESS('Все ингредиенты загружены!'))
