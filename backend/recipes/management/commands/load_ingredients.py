@@ -4,6 +4,7 @@ from django.conf import settings
 from django.core.management import BaseCommand
 from recipes.models import Ingredient
 
+
 class Command(BaseCommand):
     help = 'Загрузка из csv файла'
 
@@ -16,6 +17,8 @@ class Command(BaseCommand):
         ) as file:
             reader = csv.DictReader(file)
             Ingredient.objects.bulk_create(
-                Ingredient(name=row['name'], unit=row['unit']) for row in reader
+                Ingredient(
+                    name=row['name'], unit=row['unit']
+                ) for row in reader
             )
         self.stdout.write(self.style.SUCCESS('Все ингредиенты загружены!'))
