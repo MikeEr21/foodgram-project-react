@@ -25,7 +25,7 @@ sudo docker-compose exec backend python manage.py createsuperuser --username adm
 ```
 - Cоздать  базу данных
 ```
-sudo docker-compose exec backend python manage.py loaddata ./data/fixtures.json
+sudo docker-compose exec backend python manage.py loaddata ./data/ingredients.json
 ```
 ### Проверка работоспособности приложения: перейти на страницу:
 ```
