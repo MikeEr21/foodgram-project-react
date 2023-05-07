@@ -79,7 +79,12 @@ DATABASES = {
         'USER': os.getenv('POSTGRES_USER'),
         'PASSWORD': os.getenv('POSTGRES_PASSWORD'),
         'HOST': os.getenv('DB_HOST'),
-        'PORT': os.getenv('DB_PORT')
+        'PORT': os.getenv('DB_PORT'),
+        'CONN_MAX_AGE': 600,
+        'OPTIONS': {
+            'connect_timeout': 5,
+            'timezone': 'UTC',
+        },
     }
 }
 
