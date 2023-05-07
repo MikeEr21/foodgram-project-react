@@ -12,6 +12,8 @@ services:
   backend:
     image: mikeer21/foodgram_backend:latest
     restart: always
+    environment:
+      - TZ=UTC
     volumes:
       - data_value:/app/data/
       - static_value:/app/static/
