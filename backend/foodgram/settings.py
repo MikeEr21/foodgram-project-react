@@ -2,6 +2,11 @@ import os
 
 from dotenv import load_dotenv
 
+from django.conf.global_settings import TIME_ZONE
+
+os.environ['TZ'] = TIME_ZONE
+
+
 load_dotenv()
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -79,12 +84,7 @@ DATABASES = {
         'USER': os.getenv('POSTGRES_USER'),
         'PASSWORD': os.getenv('POSTGRES_PASSWORD'),
         'HOST': os.getenv('DB_HOST'),
-        'PORT': os.getenv('DB_PORT'),
-        'CONN_MAX_AGE': 600,
-        'OPTIONS': {
-            'connect_timeout': 5,
-            'timezone': 'UTC',
-        },
+        'PORT': os.getenv('DB_PORT')
     }
 }
 
