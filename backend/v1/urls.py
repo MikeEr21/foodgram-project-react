@@ -8,34 +8,34 @@ from users.views import AuthToken, UsersViewSet, set_password
 app_name = 'api'
 
 router = DefaultRouter()
-router.register('users', UsersViewSet)
-router.register('tags', TagsViewSet)
-router.register('ingredients', IngredientsViewSet)
-router.register('recipes', RecipesViewSet)
+router.register('v1/users', UsersViewSet)
+router.register('v1/tags', TagsViewSet)
+router.register('v1/ingredients', IngredientsViewSet)
+router.register('v1/recipes', RecipesViewSet)
 
 
 urlpatterns = [
      path(
-          'auth/token/login/',
+          'v1/auth/token/login/',
           AuthToken.as_view(),
           name='login'),
      path(
-          'users/set_password/',
+          'v1/users/set_password/',
           set_password,
           name='set_password'),
      path(
-          'users/<int:user_id>/subscribe/',
+          'v1/users/<int:user_id>/subscribe/',
           AddAndDeleteSubscribe.as_view(),
           name='subscribe'),
      path(
-          'recipes/<int:recipe_id>/favorite/',
+          'v1/recipes/<int:recipe_id>/favorite/',
           AddDeleteFavoriteRecipe.as_view(),
           name='favorite_recipe'),
      path(
-          'recipes/<int:recipe_id>/shopping_cart/',
+          'v1/recipes/<int:recipe_id>/shopping_cart/',
           AddDeleteShoppingCart.as_view(),
           name='shopping_cart'),
      path('', include(router.urls)),
      path('', include('djoser.urls')),
-     path('auth/', include('djoser.urls.authtoken')),
+     path('v1/auth/', include('djoser.urls.authtoken')),
 ]
