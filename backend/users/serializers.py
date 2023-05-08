@@ -14,10 +14,6 @@ class GetIsSubscribedMixin:
         if not user.is_authenticated:
             return False
         return user.follower.filter(author=obj).exists()
-    """Миксин отказывается работать с другими миксинами в файле
-    только здесь вместе с серилизаторами иначе ошибка при миграции
-    ImportError: cannot import name 'GetIsSubscribedMixin'
-    """
 
 
 class TokenSerializer(serializers.Serializer):
