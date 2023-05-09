@@ -1,8 +1,7 @@
 import os
 
-from dotenv import load_dotenv
-
 from django.conf.global_settings import TIME_ZONE
+from dotenv import load_dotenv
 
 os.environ['TZ'] = TIME_ZONE
 
