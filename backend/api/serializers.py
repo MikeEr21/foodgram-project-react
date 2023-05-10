@@ -11,13 +11,13 @@ class TagSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Tag
-        fields = (
+        fields = '__all__'
+        read_only_fields = (
             'id',
             'name',
             'color',
             'slug'
         )
-        read_only_fields = '__all__'
 
 
 class IngredientSerializer(serializers.ModelSerializer):
@@ -25,7 +25,10 @@ class IngredientSerializer(serializers.ModelSerializer):
     class Meta:
         model = Ingredient
         fields = '__all__'
-        read_only_fields = '__all__'
+        read_only_fields = (
+            'name',
+            'measurement_unit'
+        )
 
 
 class RecipeIngredientSerializer(serializers.ModelSerializer):
