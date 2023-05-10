@@ -33,7 +33,7 @@ class Tag(models.Model):
         'Цвет',
         max_length=7,
         unique=True)
-    slug = models.SlugField(
+    slug = models.CharField(
         'Ссылка',
         max_length=100,
         unique=True)
@@ -63,8 +63,6 @@ class Recipe(models.Model):
         null=True)
     text = models.TextField(
         'Описание рецепта')
-    cooking_time = models.BigIntegerField(
-        'Время приготовления рецепта')
     ingredients = models.ManyToManyField(
         Ingredient,
         through='RecipeIngredient')
