@@ -183,7 +183,6 @@ class FavoriteRecipe(Model):
                 print(f'Рецепт {instance} уже в избранных.')
 
 
-
 class ShoppingCart(Model):
     user = OneToOneField(
         User,
