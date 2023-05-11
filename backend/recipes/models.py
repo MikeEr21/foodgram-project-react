@@ -16,7 +16,7 @@ class Ingredient(models.Model):
         max_length=200)
 
     class Meta:
-        ordering = ['name']
+        ordering = ['-name']
         verbose_name = 'Ингредиент'
         verbose_name_plural = 'Ингредиенты'
 
@@ -41,7 +41,7 @@ class Tag(models.Model):
     class Meta:
         verbose_name = 'Тег'
         verbose_name_plural = 'Теги'
-        ordering = ['-name']
+        ordering = ['-id']
 
     def __str__(self):
         return self.name

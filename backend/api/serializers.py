@@ -37,7 +37,7 @@ class IngredientSerializer(serializers.Serializer):
         )
 
 
-class RecipeIngredientSerializer(serializers.Serializer):
+class RecipeIngredientSerializer(serializers.ModelSerializer):
     id = serializers.ReadOnlyField(
         source='ingredient.id'
     )
