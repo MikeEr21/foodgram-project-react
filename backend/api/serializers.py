@@ -30,7 +30,7 @@ class IngredientSerializer(serializers.ModelSerializer):
         )
 
 
-class RecipeIngredientSerializer(serializers.ModelSerializer):
+class RecipeIngredientSerializer(serializers.Serializer):
     id = serializers.ReadOnlyField(
         source='ingredient.id'
     )
@@ -64,7 +64,7 @@ class IngredientsEditSerializer(serializers.ModelSerializer):
         )
 
 
-class RecipeWriteSerializer(serializers.Serializer):
+class RecipeWriteSerializer(serializers.ModelSerializer):
     image = Base64ImageField(
         max_length=None,
         use_url=True
@@ -105,16 +105,14 @@ class RecipeWriteSerializer(serializers.Serializer):
                 )
         return data
 
-    @staticmethod
-    def validate_cooking_time(cooking_time):
+    def validate_cooking_time(self, cooking_time):
         if int(cooking_time) < 1:
             raise serializers.ValidationError(
                 'Время приготовления >= 1!'
             )
         return cooking_time
 
-    @staticmethod
-    def validate_ingredients(ingredients):
+    def validate_ingredients(self, ingredients):
         if not ingredients:
             raise serializers.ValidationError(
                 'Мин. 1 ингредиент в рецепте!'
@@ -126,8 +124,7 @@ class RecipeWriteSerializer(serializers.Serializer):
                 )
         return ingredients
 
-    @staticmethod
-    def create_ingredients(ingredients, recipe):
+    def create_ingredients(self, ingredients, recipe):
         for ingredient in ingredients:
             RecipeIngredient.objects.create(
                 recipe=recipe,
