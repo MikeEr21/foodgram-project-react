@@ -8,7 +8,6 @@ from users.serializers import RecipeUserSerializer
 # from rest_framework.response import Response
 
 
-
 class TagSerializer(serializers.ModelSerializer):
 
     class Meta:
