@@ -64,7 +64,7 @@ class IngredientsEditSerializer(serializers.ModelSerializer):
         )
 
 
-class RecipeWriteSerializer(serializers.ModelSerializer):
+class RecipeWriteSerializer(serializers.Serializer):
     image = Base64ImageField(
         max_length=None,
         use_url=True
