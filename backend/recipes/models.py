@@ -24,12 +24,12 @@ class Ingredient(Model):
         verbose_name = 'Ингридиент'
         verbose_name_plural = 'Ингридиенты'
         ordering = ['name']
-        constraints = (
+        constraints = [
             UniqueConstraint(
                 fields=('name', 'measurement_unit'),
                 name='unique_for_ingredient'
-            ),
-        )
+            )
+        ]
 
     def __str__(self) -> str:
         return f'{self.name} {self.measurement_unit}'
@@ -127,8 +127,8 @@ class RecipeIngredient(Model):
                 name='unique ingredient')
         ]
 
-        def __str__(self):
-            return f"{self.ingredient.name} - {self.amount} шт."
+    def __str__(self):
+        return f"{self.ingredient.name} - {self.amount} шт."
 
 
 class Subscribe(Model):
