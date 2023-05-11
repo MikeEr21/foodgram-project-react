@@ -7,7 +7,7 @@ from recipes.models import Ingredient, Recipe, RecipeIngredient, Subscribe, Tag
 from users.serializers import RecipeUserSerializer
 
 
-class TagSerializer(serializers.Serializer):
+class TagSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Tag
@@ -31,7 +31,7 @@ class IngredientSerializer(serializers.Serializer):
         )
 
 
-class RecipeIngredientSerializer(serializers.Serializer):
+class RecipeIngredientSerializer(serializers.ModelSerializer):
     id = serializers.ReadOnlyField(
         source='ingredient.id'
     )
@@ -52,7 +52,7 @@ class RecipeIngredientSerializer(serializers.Serializer):
         )
 
 
-class IngredientsEditSerializer(serializers.Serializer):
+class IngredientsEditSerializer(serializers.ModelSerializer):
 
     id = serializers.IntegerField()
     amount = serializers.IntegerField()
@@ -65,7 +65,7 @@ class IngredientsEditSerializer(serializers.Serializer):
         )
 
 
-class RecipeWriteSerializer(serializers.Serializer):
+class RecipeWriteSerializer(serializers.ModelSerializer):
     image = Base64ImageField(
         max_length=None,
         use_url=True
@@ -163,7 +163,7 @@ class RecipeWriteSerializer(serializers.Serializer):
         ).data
 
 
-class RecipeReadSerializer(serializers.Serializer):
+class RecipeReadSerializer(serializers.ModelSerializer):
     image = Base64ImageField()
     tags = TagSerializer(
         many=True,
@@ -189,7 +189,7 @@ class RecipeReadSerializer(serializers.Serializer):
         fields = '__all__'
 
 
-class SubscribeRecipeSerializer(serializers.Serializer):
+class SubscribeRecipeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Recipe
@@ -201,7 +201,7 @@ class SubscribeRecipeSerializer(serializers.Serializer):
         )
 
 
-class SubscribeSerializer(serializers.Serializer):
+class SubscribeSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(
         source='author.id'
     )
