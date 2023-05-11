@@ -83,7 +83,7 @@ class AddDeleteShoppingCart(
 
 class RecipesViewSet(viewsets.ModelViewSet):
     queryset = Recipe.objects.all()
-    filter_class = RecipeFilter
+    filterset_class = RecipeFilter
     permission_classes = (IsAuthenticatedOrReadOnly,)
 
     def get_serializer_class(self):
@@ -183,4 +183,4 @@ class IngredientsViewSet(
 ):
     queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer
-    filter_class = IngredientFilter
+    filterset_class = IngredientFilter
