@@ -31,9 +31,6 @@ class IngredientSerializer(serializers.ModelSerializer):
             'measurement_unit'
         )
 
-    def __unicode__(self):
-        return self.name
-
 
 class RecipeIngredientSerializer(serializers.ModelSerializer):
     id = serializers.ReadOnlyField(
