@@ -71,9 +71,15 @@ class AddDeleteShoppingCart(
         generics.RetrieveDestroyAPIView,
         generics.ListCreateAPIView
 ):
+    def add_to_shopping_cart(self, instance):
+        self.request.user.shopping_cart.recipe.add(instance)
+
+    def remove_from_shopping_cart(self, instance):
+        self.request.user.shopping_cart.recipe.remove(instance)
+
     def create(self, request, *args, **kwargs):
         instance = self.get_object()
-        request.user.shopping_cart.recipe.add(instance)
+        self.add_to_shopping_cart(instance)
         serializer = self.get_serializer(instance)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
@@ -83,7 +89,7 @@ class AddDeleteShoppingCart(
 
 class RecipesViewSet(viewsets.ModelViewSet):
     queryset = Recipe.objects.all()
-    filterset_class = RecipeFilter
+    filter_class = RecipeFilter
     permission_classes = (IsAuthenticatedOrReadOnly,)
 
     def get_serializer_class(self):
@@ -183,4 +189,4 @@ class IngredientsViewSet(
 ):
     queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer
-    filterset_class = IngredientFilter
+    filter_class = IngredientFilter
