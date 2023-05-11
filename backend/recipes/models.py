@@ -6,8 +6,10 @@ from django.db.models import (CASCADE, CharField, CheckConstraint,
                               PositiveSmallIntegerField, Q, TextField,
                               UniqueConstraint)
 from django.db.models.signals import post_save
+from django.db.models.functions import Length
 from django.dispatch import receiver
 
+CharField.register_lookup(Length)
 User = get_user_model()
 
 
