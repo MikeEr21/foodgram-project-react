@@ -20,7 +20,10 @@ class TagSerializer(serializers.ModelSerializer):
         )
 
 
-class IngredientSerializer(serializers.ModelSerializer):
+class IngredientSerializer(serializers.Serializer):
+    # id = serializers.IntegerField(read_only=True)
+    name = serializers.CharField(max_length=200, read_only=True)
+    measurement_unit = serializers.CharField(max_length=200, read_only=True)
     class Meta:
         model = Ingredient
         fields = '__all__'
