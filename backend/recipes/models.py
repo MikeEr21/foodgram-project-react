@@ -1,39 +1,57 @@
 from django.contrib.auth import get_user_model
 from django.core import validators
-from django.db import models
+from django.db.models import (CASCADE, CharField, CheckConstraint,
+                              DateTimeField, ForeignKey, ImageField,
+                              ManyToManyField, Model, OneToOneField,
+                              PositiveSmallIntegerField, Q, TextField,
+                              UniqueConstraint)
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
 User = get_user_model()
 
 
-class Ingredient(models.Model):
-    name = models.CharField(
+class Ingredient(Model):
+    name = CharField(
         'Название ингредиента',
         max_length=200)
-    measurement_unit = models.CharField(
+    measurement_unit = CharField(
         'Единица измерения ингредиента',
         max_length=200)
 
     class Meta:
-        ordering = ['-name']
-        verbose_name = 'Ингредиент'
-        verbose_name_plural = 'Ингредиенты'
+        verbose_name = 'Ингридиент'
+        verbose_name_plural = 'Ингридиенты'
+        ordering = ('name', )
+        constraints = (
+            UniqueConstraint(
+                fields=('name', 'measurement_unit'),
+                name='unique_for_ingredient'
+            ),
+            CheckConstraint(
+                check=Q(name__length__gt=0),
+                name='\n%(app_label)s_%(class)s_name is empty\n',
+            ),
+            CheckConstraint(
+                check=Q(measurement_unit__length__gt=0),
+                name='\n%(app_label)s_%(class)s_measurement_unit is empty\n',
+            ),
+        )
 
-    def __str__(self):
-        return f'{self.name}, {self.measurement_unit}.'
+    def __str__(self) -> str:
+        return f'{self.name} {self.measurement_unit}'
 
 
-class Tag(models.Model):
-    name = models.CharField(
+class Tag(Model):
+    name = CharField(
         'Имя',
         max_length=60,
         unique=True)
-    color = models.CharField(
+    color = CharField(
         'Цвет',
         max_length=7,
         unique=True)
-    slug = models.CharField(
+    slug = CharField(
         'Ссылка',
         max_length=100,
         unique=True)
@@ -47,34 +65,34 @@ class Tag(models.Model):
         return self.name
 
 
-class Recipe(models.Model):
-    author = models.ForeignKey(
+class Recipe(Model):
+    author = ForeignKey(
         User,
-        on_delete=models.CASCADE,
+        on_delete=CASCADE,
         related_name='recipe',
         verbose_name='Автор')
-    name = models.CharField(
+    name = CharField(
         'Название рецепта',
         max_length=255)
-    image = models.ImageField(
+    image = ImageField(
         'Изображение рецепта',
         upload_to='static/recipe/',
         blank=True,
         null=True)
-    text = models.TextField(
+    text = TextField(
         'Описание рецепта')
-    ingredients = models.ManyToManyField(
+    ingredients = ManyToManyField(
         Ingredient,
         through='RecipeIngredient')
-    tags = models.ManyToManyField(
+    tags = ManyToManyField(
         Tag,
         verbose_name='Теги',
         related_name='recipes')
-    cooking_time = models.PositiveSmallIntegerField(
+    cooking_time = PositiveSmallIntegerField(
         verbose_name='Время приготовления в минутах',
         validators=[validators.MinValueValidator(
             1, message='Мин. время приготовления 1 минута'), ])
-    pub_date = models.DateTimeField(
+    pub_date = DateTimeField(
         'Дата публикации',
         auto_now_add=True)
 
@@ -87,16 +105,16 @@ class Recipe(models.Model):
         return f'{self.author.email}, {self.name}'
 
 
-class RecipeIngredient(models.Model):
-    recipe = models.ForeignKey(
+class RecipeIngredient(Model):
+    recipe = ForeignKey(
         Recipe,
-        on_delete=models.CASCADE,
+        on_delete=CASCADE,
         related_name='recipe')
-    ingredient = models.ForeignKey(
-        'Ingredient',
-        on_delete=models.CASCADE,
+    ingredient = ForeignKey(
+        Ingredient,
+        on_delete=CASCADE,
         related_name='ingredient')
-    amount = models.PositiveSmallIntegerField(
+    amount = PositiveSmallIntegerField(
         default=1,
         validators=(
             validators.MinValueValidator(
@@ -111,7 +129,7 @@ class RecipeIngredient(models.Model):
         verbose_name_plural = 'Количество ингредиентов'
         ordering = ['-id']
         constraints = [
-            models.UniqueConstraint(
+            UniqueConstraint(
                 fields=['recipe', 'ingredient'],
                 name='unique ingredient')
         ]
@@ -120,18 +138,18 @@ class RecipeIngredient(models.Model):
             return f"{self.ingredient.name} - {self.amount} шт."
 
 
-class Subscribe(models.Model):
-    user = models.ForeignKey(
+class Subscribe(Model):
+    user = ForeignKey(
         User,
-        on_delete=models.CASCADE,
+        on_delete=CASCADE,
         related_name='follower',
         verbose_name='Подписчик')
-    author = models.ForeignKey(
+    author = ForeignKey(
         User,
-        on_delete=models.CASCADE,
+        on_delete=CASCADE,
         related_name='following',
         verbose_name='Автор')
-    created = models.DateTimeField(
+    created = DateTimeField(
         'Дата подписки',
         auto_now_add=True)
 
@@ -140,7 +158,7 @@ class Subscribe(models.Model):
         verbose_name_plural = 'Подписки'
         ordering = ['-id']
         constraints = [
-            models.UniqueConstraint(
+            UniqueConstraint(
                 fields=['user', 'author'],
                 name='unique_subscription')]
 
@@ -148,14 +166,14 @@ class Subscribe(models.Model):
         return f'Пользователь {self.user} -> автор {self.author}'
 
 
-class FavoriteRecipe(models.Model):
-    user = models.OneToOneField(
+class FavoriteRecipe(Model):
+    user = OneToOneField(
         User,
-        on_delete=models.CASCADE,
+        on_delete=CASCADE,
         null=True,
         related_name='favorite_recipe',
         verbose_name='Пользователь')
-    recipe = models.ManyToManyField(
+    recipe = ManyToManyField(
         Recipe,
         related_name='favorite_recipe',
         verbose_name='Избранный рецепт')
@@ -178,14 +196,14 @@ class FavoriteRecipe(models.Model):
                 print(f'Рецепт {instance} уже в избранных.')
 
 
-class ShoppingCart(models.Model):
-    user = models.OneToOneField(
+class ShoppingCart(Model):
+    user = OneToOneField(
         User,
-        on_delete=models.CASCADE,
+        on_delete=CASCADE,
         related_name='shopping_cart',
         null=True,
         verbose_name='Пользователь')
-    recipe = models.ManyToManyField(
+    recipe = ManyToManyField(
         Recipe,
         related_name='shopping_cart',
         verbose_name='Покупка')
