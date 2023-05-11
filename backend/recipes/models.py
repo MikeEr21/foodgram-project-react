@@ -24,12 +24,6 @@ class Ingredient(Model):
         verbose_name = 'Ингридиент'
         verbose_name_plural = 'Ингридиенты'
         ordering = ['name']
-        # constraints = [
-        #     UniqueConstraint(
-        #         fields=('name', 'measurement_unit'),
-        #         name='unique_for_ingredient'
-        #     )
-        # ]
 
     def __str__(self) -> str:
         return f'{self.name} {self.measurement_unit}'
@@ -187,6 +181,7 @@ class FavoriteRecipe(Model):
             )
             if not created:
                 print(f'Рецепт {instance} уже в избранных.')
+
 
 
 class ShoppingCart(Model):

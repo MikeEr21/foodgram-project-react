@@ -21,7 +21,6 @@ class TagSerializer(serializers.ModelSerializer):
 
 
 class IngredientSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Ingredient
         fields = '__all__'
@@ -65,7 +64,7 @@ class IngredientsEditSerializer(serializers.ModelSerializer):
         )
 
 
-class RecipeWriteSerializer(serializers.Serializer):
+class RecipeWriteSerializer(serializers.ModelSerializer):
     image = Base64ImageField(
         max_length=None,
         use_url=True
