@@ -7,7 +7,7 @@ from recipes.models import Ingredient, Recipe, RecipeIngredient, Subscribe, Tag
 from users.serializers import RecipeUserSerializer
 
 
-class TagSerializer(serializers.ModelSerializer):
+class TagSerializer(serializers.Serializer):
 
     class Meta:
         model = Tag
@@ -20,7 +20,7 @@ class TagSerializer(serializers.ModelSerializer):
         )
 
 
-class IngredientSerializer(serializers.ModelSerializer):
+class IngredientSerializer(serializers.Serializer):
 
     class Meta:
         model = Ingredient
@@ -31,7 +31,7 @@ class IngredientSerializer(serializers.ModelSerializer):
         )
 
 
-class RecipeIngredientSerializer(serializers.ModelSerializer):
+class RecipeIngredientSerializer(serializers.Serializer):
     id = serializers.ReadOnlyField(
         source='ingredient.id'
     )
@@ -52,7 +52,7 @@ class RecipeIngredientSerializer(serializers.ModelSerializer):
         )
 
 
-class IngredientsEditSerializer(serializers.ModelSerializer):
+class IngredientsEditSerializer(serializers.Serializer):
 
     id = serializers.IntegerField()
     amount = serializers.IntegerField()
@@ -65,7 +65,7 @@ class IngredientsEditSerializer(serializers.ModelSerializer):
         )
 
 
-class RecipeWriteSerializer(serializers.ModelSerializer):
+class RecipeWriteSerializer(serializers.Serializer):
     image = Base64ImageField(
         max_length=None,
         use_url=True
@@ -163,7 +163,7 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
         ).data
 
 
-class RecipeReadSerializer(serializers.ModelSerializer):
+class RecipeReadSerializer(serializers.Serializer):
     image = Base64ImageField()
     tags = TagSerializer(
         many=True,
@@ -189,7 +189,7 @@ class RecipeReadSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class SubscribeRecipeSerializer(serializers.ModelSerializer):
+class SubscribeRecipeSerializer(serializers.Serializer):
 
     class Meta:
         model = Recipe
@@ -201,7 +201,7 @@ class SubscribeRecipeSerializer(serializers.ModelSerializer):
         )
 
 
-class SubscribeSerializer(serializers.ModelSerializer):
+class SubscribeSerializer(serializers.Serializer):
     id = serializers.IntegerField(
         source='author.id'
     )
