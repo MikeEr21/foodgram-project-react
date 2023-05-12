@@ -1,9 +1,10 @@
 from django.contrib.auth import get_user_model
 from django.core import validators
-from django.db.models import (CASCADE, CharField, DateTimeField, ForeignKey,
-                              ImageField, ManyToManyField, Model, Q,
-                              OneToOneField, PositiveSmallIntegerField,
-                              TextField, UniqueConstraint, CheckConstraint)
+from django.db.models import (CASCADE, CharField, CheckConstraint,
+                              DateTimeField, ForeignKey, ImageField,
+                              ManyToManyField, Model, OneToOneField,
+                              PositiveSmallIntegerField, Q, TextField,
+                              UniqueConstraint)
 from django.db.models.functions import Length
 from django.db.models.signals import post_save
 from django.dispatch import receiver
