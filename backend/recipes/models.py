@@ -25,8 +25,8 @@ class Ingredient(Model):
         verbose_name_plural = 'Ингридиенты'
         ordering = ['name']
 
-    # def __str__(self) -> str:
-    #     return f'{self.name} {self.measurement_unit}'
+    def __str__(self) -> str:
+        return f'{self.name} {self.measurement_unit}'
 
 
 class Tag(Model):
@@ -121,8 +121,8 @@ class RecipeIngredient(Model):
                 name='unique ingredient')
         ]
 
-    # def __str__(self):
-    #     return f"{self.ingredient.name} - {self.amount} шт."
+    def __str__(self):
+        return f"{self.ingredient.name} - {self.amount} шт."
 
 
 class Subscribe(Model):
