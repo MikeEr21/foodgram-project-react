@@ -25,7 +25,6 @@ class IngredientSerializer(serializers.ModelSerializer):
     class Meta:
         model = Ingredient
         fields = '__all__'
-        read_only_fields = '__all__'
 
 
 class RecipeIngredientSerializer(serializers.ModelSerializer):
