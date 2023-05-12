@@ -28,9 +28,6 @@ class Ingredient(Model):
     def __str__(self) -> str:
         return f'{self.name} {self.measurement_unit}'
 
-    def __unicode__(self):
-        return self.name
-
 
 class Tag(Model):
     name = CharField(
