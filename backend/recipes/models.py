@@ -1,15 +1,17 @@
 from django.contrib.auth import get_user_model
 from django.core import validators
 from django.db.models import (CASCADE, CharField, DateTimeField, ForeignKey,
-                              ImageField, ManyToManyField, Model,
+                              ImageField, ManyToManyField, Model, Q,
                               OneToOneField, PositiveSmallIntegerField,
-                              TextField, UniqueConstraint)
+                              TextField, UniqueConstraint, CheckConstraint)
 from django.db.models.functions import Length
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from PIL import Image
 
 CharField.register_lookup(Length)
 User = get_user_model()
+RECIPE_IMAGE_SIZE = 500, 300
 
 
 class Ingredient(Model):
@@ -23,10 +25,29 @@ class Ingredient(Model):
     class Meta:
         verbose_name = 'Ингридиент'
         verbose_name_plural = 'Ингридиенты'
-        ordering = ['name']
+        ordering = ('name', )
+        constraints = (
+            UniqueConstraint(
+                fields=('name', 'measurement_unit'),
+                name='unique_for_ingredient'
+            ),
+            CheckConstraint(
+                check=Q(name__length__gt=0),
+                name='\n%(app_label)s_%(class)s_name is empty\n',
+            ),
+            CheckConstraint(
+                check=Q(measurement_unit__length__gt=0),
+                name='\n%(app_label)s_%(class)s_measurement_unit is empty\n',
+            ),
+        )
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f'{self.name} {self.measurement_unit}'
+
+    def clean(self) -> None:
+        self.name = self.name.lower()
+        self.measurement_unit = self.measurement_unit.lower()
+        super().clean()
 
 
 class Tag(Model):
@@ -87,9 +108,29 @@ class Recipe(Model):
         verbose_name = 'Рецепт'
         verbose_name_plural = 'Рецепты'
         ordering = ('-pub_date', )
+        constraints = (
+            UniqueConstraint(
+                fields=('name', 'author'),
+                name='unique_for_author',
+            ),
+            CheckConstraint(
+                check=Q(name__length__gt=0),
+                name='\n%(app_label)s_%(class)s_name is empty\n',
+            ),
+        )
 
-    def __str__(self):
-        return f'{self.author.email}, {self.name}'
+    def __str__(self) -> str:
+        return f'{self.name}. Автор: {self.author.username}'
+
+    def clean(self) -> None:
+        self.name = self.name.capitalize()
+        return super().clean()
+
+    def save(self, *args, **kwargs) -> None:
+        super().save(*args, **kwargs)
+        image = Image.open(self.image.path)
+        image = image.resize(RECIPE_IMAGE_SIZE)
+        image.save(self.image.path)
 
 
 class RecipeIngredient(Model):
