@@ -21,7 +21,7 @@ class TagSerializer(serializers.ModelSerializer):
         )
 
 
-class IngredientSerializer(serializers.Serializer):
+class IngredientSerializer(serializers.ModelSerializer):
     name = serializers.CharField(
         read_only=True
     )
@@ -32,18 +32,6 @@ class IngredientSerializer(serializers.Serializer):
     class Meta:
         model = Ingredient
         fields = '__all__'
-
-    # def create(self, validated_data):
-    #     return Ingredient.objects.create(**validated_data)
-    #
-    # def update(self, instance, validated_data):
-    #     instance.name = validated_data.get('name', instance.name)
-    #     instance.measurement_unit = validated_data.get(
-    #         'measurement_unit',
-    #         instance.measurement_unit
-    #     )
-    #     instance.save()
-    #     return instance
 
 
 class RecipeIngredientSerializer(serializers.ModelSerializer):
