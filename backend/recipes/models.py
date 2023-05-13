@@ -26,17 +26,11 @@ class Ingredient(Model):
         verbose_name = 'Ингридиент'
         verbose_name_plural = 'Ингридиенты'
         ordering = ('name', )
-        constraints = (
-            UniqueConstraint(
-                fields=('name', 'measurement_unit'),
-                name='unique_for_ingredient'
-            ),
-        )
 
     def __str__(self):
         return f'{self.name} {self.measurement_unit}'
 
-    def clean(self) -> None:
+    def clean(self):
         self.name = self.name.lower()
         self.measurement_unit = self.measurement_unit.lower()
         super().clean()
@@ -100,12 +94,6 @@ class Recipe(Model):
         verbose_name = 'Рецепт'
         verbose_name_plural = 'Рецепты'
         ordering = ('-pub_date', )
-        constraints = (
-            UniqueConstraint(
-                fields=('name', 'author'),
-                name='unique_for_author',
-            ),
-        )
 
     def __str__(self):
         return f'{self.name}. Автор: {self.author.username}'
