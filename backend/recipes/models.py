@@ -30,11 +30,6 @@ class Ingredient(Model):
     def __str__(self):
         return f'{self.name} {self.measurement_unit}'
 
-    def clean(self):
-        self.name = self.name.lower()
-        self.measurement_unit = self.measurement_unit.lower()
-        super().clean()
-
 
 class Tag(Model):
     name = CharField(
@@ -137,9 +132,6 @@ class RecipeIngredient(Model):
                 fields=['recipe', 'ingredient'],
                 name='unique ingredient')
         ]
-
-    def __str__(self):
-        return f"{self.ingredient.name} - {self.amount} шт."
 
 
 class Subscribe(Model):
