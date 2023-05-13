@@ -1,9 +1,9 @@
 from django.contrib.auth import get_user_model
 from django.core import validators
-from django.db.models import (CASCADE, CharField, CheckConstraint,
+from django.db.models import (CASCADE, CharField,
                               DateTimeField, ForeignKey, ImageField,
                               ManyToManyField, Model, OneToOneField,
-                              PositiveSmallIntegerField, Q, TextField,
+                              PositiveSmallIntegerField, TextField,
                               UniqueConstraint)
 from django.db.models.functions import Length
 from django.db.models.signals import post_save
@@ -32,17 +32,9 @@ class Ingredient(Model):
                 fields=('name', 'measurement_unit'),
                 name='unique_for_ingredient'
             ),
-            CheckConstraint(
-                check=Q(name__length__gt=0),
-                name='\n%(app_label)s_%(class)s_name is empty\n',
-            ),
-            CheckConstraint(
-                check=Q(measurement_unit__length__gt=0),
-                name='\n%(app_label)s_%(class)s_measurement_unit is empty\n',
-            ),
         )
 
-    def __str__(self) -> str:
+    def __str__(self):
         return f'{self.name} {self.measurement_unit}'
 
     def clean(self) -> None:
@@ -114,16 +106,12 @@ class Recipe(Model):
                 fields=('name', 'author'),
                 name='unique_for_author',
             ),
-            CheckConstraint(
-                check=Q(name__length__gt=0),
-                name='\n%(app_label)s_%(class)s_name is empty\n',
-            ),
         )
 
-    def __str__(self) -> str:
+    def __str__(self):
         return f'{self.name}. Автор: {self.author.username}'
 
-    def clean(self) -> None:
+    def clean(self):
         self.name = self.name.capitalize()
         return super().clean()
 
