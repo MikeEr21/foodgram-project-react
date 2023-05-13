@@ -72,7 +72,7 @@ class IngredientsEditSerializer(serializers.ModelSerializer):
     amount = serializers.IntegerField()
 
     class Meta:
-        model = IngredientSerializer
+        model = RecipeIngredient
         fields = (
             'id',
             'amount'
@@ -114,14 +114,12 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
                     f'Тега {tag_name} не существует!')
         return data
 
-    @staticmethod
     def validate_cooking_time(self, cooking_time):
         if int(cooking_time) < 1:
             raise serializers.ValidationError(
                 'Время приготовления >= 1!')
         return cooking_time
 
-    @staticmethod
     def validate_ingredients(self, ingredients):
         if not ingredients:
             raise serializers.ValidationError(
@@ -132,7 +130,6 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
                     'Количество ингредиента >= 1!')
         return ingredients
 
-    @staticmethod
     def create_ingredients(self, ingredients, recipe):
         for ingredient in ingredients:
             RecipeIngredient.objects.create(

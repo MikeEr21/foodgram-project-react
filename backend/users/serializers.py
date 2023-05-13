@@ -87,7 +87,6 @@ class UserCreateSerializer(serializers.ModelSerializer):
             'password'
         )
 
-    @staticmethod
     def validate_password(self, password):
         validators.validate_password(password)
         return password
