@@ -7,11 +7,9 @@ from django.db.models import (CASCADE, CharField, DateTimeField, ForeignKey,
 from django.db.models.functions import Length
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from PIL import Image
 
 CharField.register_lookup(Length)
 User = get_user_model()
-RECIPE_IMAGE_SIZE = 500, 300
 
 
 class Ingredient(Model):
@@ -91,17 +89,7 @@ class Recipe(Model):
         ordering = ('-pub_date', )
 
     def __str__(self):
-        return f'{self.name}. Автор: {self.author.username}'
-
-    def clean(self):
-        self.name = self.name.capitalize()
-        return super().clean()
-
-    def save(self, *args, **kwargs) -> None:
-        super().save(*args, **kwargs)
-        image = Image.open(self.image.path)
-        image = image.resize(RECIPE_IMAGE_SIZE)
-        image.save(self.image.path)
+        return f'{self.author.email}, {self.name}'
 
 
 class RecipeIngredient(Model):

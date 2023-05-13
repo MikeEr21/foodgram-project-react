@@ -20,10 +20,6 @@ class TagSerializer(serializers.ModelSerializer):
 
 
 class IngredientSerializer(serializers.ModelSerializer):
-    # id = serializers.IntegerField()
-    # name = serializers.CharField()
-    # measurement_unit = serializers.CharField()
-
     class Meta:
         model = Ingredient
         fields = (
@@ -31,18 +27,6 @@ class IngredientSerializer(serializers.ModelSerializer):
             'name',
             'measurement_unit'
         )
-
-    # def create(self, validated_data):
-    #     return Ingredient.objects.create(**validated_data)
-    #
-    # def update(self, instance, validated_data):
-    #     instance.name = validated_data.get('name', instance.name)
-    #     instance.measurement_unit = validated_data.get(
-    #         'measurement_unit',
-    #         instance.measurement_unit
-    #     )
-    #     instance.save()
-    #     return instance
 
 
 class RecipeIngredientSerializer(serializers.ModelSerializer):
@@ -72,7 +56,7 @@ class IngredientsEditSerializer(serializers.ModelSerializer):
     amount = serializers.IntegerField()
 
     class Meta:
-        model = RecipeIngredient
+        model = Ingredient
         fields = (
             'id',
             'amount'
@@ -226,20 +210,6 @@ class SubscribeSerializer(serializers.ModelSerializer):
         read_only=True
     )
 
-    def create(self, request, *args, **kwargs):
-        instance = self.get_object()
-        if request.user.id == instance.id:
-            return Response(
-                {'errors': 'На самого себя нельзя подписаться!'},
-                status=status.HTTP_400_BAD_REQUEST)
-        if request.user.follower.filter(author=instance).exists():
-            return Response(
-                {'errors': 'Подписка уже оформлена!'},
-                status=status.HTTP_400_BAD_REQUEST)
-        subs = request.user.follower.create(author=instance)
-        serializer = self.get_serializer(subs)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
-
     class Meta:
         model = Subscribe
         fields = (
@@ -263,3 +233,17 @@ class SubscribeSerializer(serializers.ModelSerializer):
             recipes,
             many=True
         ).data
+
+    def create(self, request, *args, **kwargs):
+        instance = self.get_object()
+        if request.user.id == instance.id:
+            return Response(
+                {'errors': 'На самого себя нельзя подписаться!'},
+                status=status.HTTP_400_BAD_REQUEST)
+        if request.user.follower.filter(author=instance).exists():
+            return Response(
+                {'errors': 'Подписка уже оформлена!'},
+                status=status.HTTP_400_BAD_REQUEST)
+        subs = request.user.follower.create(author=instance)
+        serializer = self.get_serializer(subs)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
