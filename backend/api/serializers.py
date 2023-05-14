@@ -106,7 +106,6 @@ class RecipeWriteSerializer(serializers.Serializer):
                 )
         return data
 
-    @staticmethod
     def validate_cooking_time(cooking_time):
         if int(cooking_time) < 1:
             raise serializers.ValidationError(
@@ -114,7 +113,6 @@ class RecipeWriteSerializer(serializers.Serializer):
             )
         return cooking_time
 
-    @staticmethod
     def validate_ingredients(ingredients):
         if not ingredients:
             raise serializers.ValidationError(
@@ -127,7 +125,6 @@ class RecipeWriteSerializer(serializers.Serializer):
                 )
         return ingredients
 
-    @staticmethod
     def create_ingredients(ingredients, recipe):
         for ingredient in ingredients:
             RecipeIngredient.objects.create(
