@@ -11,7 +11,8 @@ class TagSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Tag
-        fields = (
+        fields = '__all__'
+        read_only_fields = (
             'id',
             'name',
             'color',
@@ -20,10 +21,11 @@ class TagSerializer(serializers.ModelSerializer):
 
 
 class IngredientSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = Ingredient
-        fields = (
-            'id',
+        fields = '__all__'
+        read_only_fields = (
             'name',
             'measurement_unit'
         )
@@ -56,22 +58,24 @@ class IngredientsEditSerializer(serializers.ModelSerializer):
     amount = serializers.IntegerField()
 
     class Meta:
-        model = Ingredient
+        model = IngredientSerializer
         fields = (
             'id',
             'amount'
         )
 
 
-class RecipeWriteSerializer(serializers.ModelSerializer):
+class RecipeWriteSerializer(serializers.Serializer):
     image = Base64ImageField(
         max_length=None,
-        use_url=True)
+        use_url=True
+    )
     tags = serializers.PrimaryKeyRelatedField(
         many=True,
         queryset=Tag.objects.all())
     ingredients = IngredientsEditSerializer(
-        many=True)
+        many=True
+    )
 
     class Meta:
         model = Recipe
@@ -83,43 +87,54 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
         ingredient_list = []
         for items in ingredients:
             ingredient = get_object_or_404(
-                Ingredient, id=items['id'])
+                IngredientSerializer, id=items['id']
+            )
             if ingredient in ingredient_list:
                 raise serializers.ValidationError(
-                    'Ингредиент должен быть уникальным!')
+                    'Ингредиент должен быть уникальным!'
+                )
             ingredient_list.append(ingredient)
         tags = data['tags']
         if not tags:
             raise serializers.ValidationError(
-                'Нужен хотя бы один тег для рецепта!')
+                'Нужен хотя бы один тег для рецепта!'
+            )
         for tag_name in tags:
             if not Tag.objects.filter(name=tag_name).exists():
                 raise serializers.ValidationError(
-                    f'Тега {tag_name} не существует!')
+                    f'Тега {tag_name} не существует!'
+                )
         return data
 
-    def validate_cooking_time(self, cooking_time):
+    @staticmethod
+    def validate_cooking_time(cooking_time):
         if int(cooking_time) < 1:
             raise serializers.ValidationError(
-                'Время приготовления >= 1!')
+                'Время приготовления >= 1!'
+            )
         return cooking_time
 
-    def validate_ingredients(self, ingredients):
+    @staticmethod
+    def validate_ingredients(ingredients):
         if not ingredients:
             raise serializers.ValidationError(
-                'Мин. 1 ингредиент в рецепте!')
+                'Мин. 1 ингредиент в рецепте!'
+            )
         for ingredient in ingredients:
             if int(ingredient.get('amount')) < 1:
                 raise serializers.ValidationError(
-                    'Количество ингредиента >= 1!')
+                    'Количество ингредиента >= 1!'
+                )
         return ingredients
 
-    def create_ingredients(self, ingredients, recipe):
+    @staticmethod
+    def create_ingredients(ingredients, recipe):
         for ingredient in ingredients:
             RecipeIngredient.objects.create(
                 recipe=recipe,
                 ingredient_id=ingredient.get('id'),
-                amount=ingredient.get('amount'), )
+                amount=ingredient.get('amount'),
+            )
 
     def create(self, validated_data):
         ingredients = validated_data.pop('ingredients')
@@ -136,16 +151,19 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
             self.create_ingredients(ingredients, instance)
         if 'tags' in validated_data:
             instance.tags.set(
-                validated_data.pop('tags'))
+                validated_data.pop('tags')
+            )
         return super().update(
-            instance, validated_data)
+            instance, validated_data
+        )
 
     def to_representation(self, instance):
         return RecipeReadSerializer(
             instance,
             context={
                 'request': self.context.get('request')
-            }).data
+            }
+        ).data
 
 
 class RecipeReadSerializer(serializers.ModelSerializer):
@@ -210,6 +228,20 @@ class SubscribeSerializer(serializers.ModelSerializer):
         read_only=True
     )
 
+    def create(self, request, *args, **kwargs):
+        instance = self.get_object()
+        if request.user.id == instance.id:
+            return Response(
+                {'errors': 'На самого себя нельзя подписаться!'},
+                status=status.HTTP_400_BAD_REQUEST)
+        if request.user.follower.filter(author=instance).exists():
+            return Response(
+                {'errors': 'Подписка уже оформлена!'},
+                status=status.HTTP_400_BAD_REQUEST)
+        subs = request.user.follower.create(author=instance)
+        serializer = self.get_serializer(subs)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
     class Meta:
         model = Subscribe
         fields = (
@@ -233,17 +265,3 @@ class SubscribeSerializer(serializers.ModelSerializer):
             recipes,
             many=True
         ).data
-
-    def create(self, request, *args, **kwargs):
-        instance = self.get_object()
-        if request.user.id == instance.id:
-            return Response(
-                {'errors': 'На самого себя нельзя подписаться!'},
-                status=status.HTTP_400_BAD_REQUEST)
-        if request.user.follower.filter(author=instance).exists():
-            return Response(
-                {'errors': 'Подписка уже оформлена!'},
-                status=status.HTTP_400_BAD_REQUEST)
-        subs = request.user.follower.create(author=instance)
-        serializer = self.get_serializer(subs)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
