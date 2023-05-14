@@ -23,10 +23,13 @@ class Ingredient(Model):
     class Meta:
         verbose_name = 'Ингридиент'
         verbose_name_plural = 'Ингридиенты'
-        ordering = ('name', )
+        ordering = ['name']
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f'{self.name} {self.measurement_unit}'
+
+    def __unicode__(self):
+        return self.name
 
 
 class Tag(Model):
@@ -120,6 +123,9 @@ class RecipeIngredient(Model):
                 fields=['recipe', 'ingredient'],
                 name='unique ingredient')
         ]
+
+    def __str__(self):
+        return f"{self.ingredient.name} - {self.amount} шт."
 
 
 class Subscribe(Model):
