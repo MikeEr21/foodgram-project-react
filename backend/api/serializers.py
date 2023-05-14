@@ -87,7 +87,7 @@ class RecipeWriteSerializer(serializers.Serializer):
         ingredient_list = []
         for items in ingredients:
             ingredient = get_object_or_404(
-                IngredientSerializer, id=items['id']
+                Ingredient, id=items['id']
             )
             if ingredient in ingredient_list:
                 raise serializers.ValidationError(
