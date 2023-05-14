@@ -1,7 +1,6 @@
 from django.shortcuts import get_object_or_404
 from drf_base64.fields import Base64ImageField
-from rest_framework import serializers, status
-from rest_framework.response import Response
+from rest_framework import serializers
 
 from recipes.models import Ingredient, Recipe, RecipeIngredient, Subscribe, Tag
 from users.serializers import RecipeUserSerializer
@@ -211,20 +210,6 @@ class SubscribeSerializer(serializers.ModelSerializer):
     recipes_count = serializers.IntegerField(
         read_only=True
     )
-
-    def create(self, request, *args, **kwargs):
-        instance = self.get_object()
-        if request.user.id == instance.id:
-            return Response(
-                {'errors': 'На самого себя нельзя подписаться!'},
-                status=status.HTTP_400_BAD_REQUEST)
-        if request.user.follower.filter(author=instance).exists():
-            return Response(
-                {'errors': 'Подписка уже оформлена!'},
-                status=status.HTTP_400_BAD_REQUEST)
-        subs = request.user.follower.create(author=instance)
-        serializer = self.get_serializer(subs)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     class Meta:
         model = Subscribe
