@@ -136,7 +136,7 @@ class RecipeWriteSerializer(serializers.Serializer):
     def create(self, validated_data):
         ingredients = validated_data.pop('ingredients')
         tags = validated_data.pop('tags')
-        cooking_time = validated_data.pop('cooking_time')
+        cooking_time = validated_data.pop('cooking_time', None)
         recipe = Recipe.objects.create(
             cooking_time=cooking_time,
             **validated_data
