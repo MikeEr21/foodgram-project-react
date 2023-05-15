@@ -5,6 +5,8 @@ from django.db.models.aggregates import Count, Sum
 from django.db.models.expressions import Exists, OuterRef, Value
 from django.http import FileResponse
 from django.shortcuts import get_object_or_404
+from reportlab.pdfbase import pdfmetrics
+from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.pdfgen import canvas
 from rest_framework import generics, status, viewsets
 from rest_framework.decorators import action
@@ -141,6 +143,7 @@ class RecipesViewSet(viewsets.ModelViewSet):
         filename = 'shoppingcart.pdf'
         buffer = io.BytesIO()
         page = canvas.Canvas(buffer)
+        pdfmetrics.registerFont(TTFont('Vera', 'api/templates/Vera.ttf'))
         x_position, y_position = 50, 800
         shopping_cart = (
             request.user.shopping_cart.recipe.
@@ -149,7 +152,7 @@ class RecipesViewSet(viewsets.ModelViewSet):
                 'ingredients__measurement_unit'
             ).annotate(amount=Sum('recipe__amount')).order_by()
         )
-        page.setFont('Helvetica', 14)
+        page.setFont('Vera', 14)
         if shopping_cart:
             indent = 20
             page.drawString(x_position, y_position, 'Cписок покупок:')
@@ -169,7 +172,7 @@ class RecipesViewSet(viewsets.ModelViewSet):
             return FileResponse(
                 buffer, as_attachment=True, filename=filename
             )
-        page.setFont('Helvetica', 24)
+        page.setFont('Vera', 24)
         page.drawString(
             x_position,
             y_position,
