@@ -1,4 +1,5 @@
 import io
+import os
 
 from django.contrib.auth import get_user_model
 from django.db.models.aggregates import Count, Sum
@@ -23,6 +24,7 @@ from recipes.models import (FavoriteRecipe, Ingredient, Recipe, ShoppingCart,
                             Tag)
 
 User = get_user_model()
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
 class AddAndDeleteSubscribe(
@@ -140,7 +142,7 @@ class RecipesViewSet(viewsets.ModelViewSet):
         permission_classes=(IsAuthenticated,)
     )
     def download_shopping_cart(self, request):
-        font_path = '/app/api/templates/Vera.ttf'
+        font_path = os.path.join(BASE_DIR, 'Vera.ttf')
         filename = 'shoppingcart.pdf'
         buffer = io.BytesIO()
         page = canvas.Canvas(buffer)
