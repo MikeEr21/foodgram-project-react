@@ -50,7 +50,7 @@ class UsersViewSet(UserViewSet):
 
     def get_serializer_class(self):
         if self.request.method.lower() == 'post':
-            return UserCreateSerializer
+            return SubscribeSerializer
         return UserListSerializer
 
     def perform_create(self, serializer):
