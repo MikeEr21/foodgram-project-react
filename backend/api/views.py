@@ -142,7 +142,7 @@ class RecipesViewSet(viewsets.ModelViewSet):
         permission_classes=(IsAuthenticated,)
     )
     def download_shopping_cart(self, request):
-        font_path = os.path.join(BASE_DIR, 'Vera.ttf')
+        font_path = os.path.join(BASE_DIR, 'fonts/DejaVuSans.ttf')
         filename = 'shoppingcart.pdf'
         buffer = io.BytesIO()
         page = canvas.Canvas(buffer)
