@@ -3,8 +3,8 @@
 [![foodgram-project-react workflow](https://github.com/MikeEr21/foodgram-project-react/actions/workflows/foodgram.yml/badge.svg)](https://github.com/MikeEr21/foodgram-project-react/actions/workflows/foodgram.yml)
 
 ### Технологии
-* Python 3.7
-* Django 2.2.19
+* Python 3.9
+* Django 3.2.19
 * DRF 3.12.4
 * Nginx
 * docker-compose
@@ -30,11 +30,8 @@ sudo docker-compose exec backend python manage.py load_ingredients
 ```
 ### Проверка работоспособности приложения: перейти на страницу:
 ```
-http://158.160.43.179/admin/
+http://158.160.39.23/admin/
 ```
-### Документация:
-```
-http://158.160.43.179/redoc/
-```
+
 ### Автор
 Михаил Ермолаев
