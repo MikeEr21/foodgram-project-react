@@ -1,6 +1,8 @@
 import django.contrib.auth.password_validation as validators
 from django.contrib.auth import authenticate, get_user_model
 from django.contrib.auth.hashers import make_password
+from django.contrib.auth.password_validation import (ValidationError,
+                                                     validate_password)
 from rest_framework import serializers
 
 User = get_user_model()
@@ -84,32 +86,32 @@ class UserCreateSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(
         required=True,
         error_messages={
-            'required': 'Поле обязательно для заполнения.',
+            'required': 'Адрес электронной почты обязательно для заполнения.',
             'invalid': 'Введите корректный адрес электронной почты.'
         }
     )
     username = serializers.CharField(
         required=True,
         error_messages={
-            'required': 'Поле обязательно для заполнения.'
+            'required': 'Имя пользователя обязательно для заполнения.'
         }
     )
     first_name = serializers.CharField(
         required=True,
         error_messages={
-            'required': 'Поле обязательно для заполнения.'
+            'required': 'Имя обязательно для заполнения.'
         }
     )
     last_name = serializers.CharField(
         required=True,
         error_messages={
-            'required': 'Поле обязательно для заполнения.'
+            'required': 'Фамилия обязательно для заполнения.'
         }
     )
     password = serializers.CharField(
         required=True,
         error_messages={
-            'required': 'Поле обязательно для заполнения.'
+            'required': 'Пароль обязательно для заполнения.'
         }
     )
 
@@ -148,7 +150,11 @@ class UserPasswordSerializer(serializers.Serializer):
         return current_password
 
     def validate_new_password(self, new_password):
-        validators.validate_password(new_password)
+        try:
+            validate_password(new_password)
+        except ValidationError as e:
+            raise serializers.ValidationError(e.messages[0])
+
         return new_password
 
     def create(self, validated_data):

@@ -1,16 +1,15 @@
+from api.serializers import SubscribeSerializer
 from django.contrib.auth import get_user_model
 from django.contrib.auth.hashers import make_password
 from django.db.models.expressions import Exists, OuterRef, Value
 from djoser.views import UserViewSet
+from recipes.models import Subscribe
 from rest_framework import status
 from rest_framework.authtoken.models import Token
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.decorators import action, api_view
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
-
-from api.serializers import SubscribeSerializer
-from recipes.models import Subscribe
 from users.serializers import (TokenSerializer, UserListSerializer,
                                UserPasswordSerializer)
 
