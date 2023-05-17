@@ -46,14 +46,6 @@ class UsersViewSet(UserViewSet):
         ) if self.request.user.is_authenticated else User.objects.annotate(
             is_subscribed=Value(False)
         )
-    #
-    # def get_serializer_class(self):
-    #     if self.request.method.lower() == 'post':
-    #         return UserCreateSerializer
-    #     return UserListSerializer
-    #
-    # def perform_create(self, serializer):
-    #     serializer.save()
 
     @action(
         detail=False,
