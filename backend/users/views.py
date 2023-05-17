@@ -10,8 +10,8 @@ from rest_framework.response import Response
 
 from api.serializers import SubscribeSerializer
 from recipes.models import Subscribe
-from users.serializers import (TokenSerializer, UserCreateSerializer,
-                               UserListSerializer, UserPasswordSerializer)
+from users.serializers import (TokenSerializer, UserListSerializer,
+                               UserPasswordSerializer)
 
 User = get_user_model()
 
