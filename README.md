@@ -1,6 +1,8 @@
 # Дипломный проект FOODGRAM.
 
 [![foodgram-project-react workflow](https://github.com/MikeEr21/foodgram-project-react/actions/workflows/foodgram.yml/badge.svg)](https://github.com/MikeEr21/foodgram-project-react/actions/workflows/foodgram.yml)
+![Deploy_badge](https://github.com/MikeEr21/foodgram-project-react/actions/workflows/foodgram.yml/badge.svg)
+
 
 ### Технологии
 * Python 3.9
