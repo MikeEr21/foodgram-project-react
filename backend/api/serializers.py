@@ -8,6 +8,7 @@ from users.serializers import RecipeUserSerializer
 
 User = get_user_model()
 
+
 class TagSerializer(serializers.ModelSerializer):
 
     class Meta:
