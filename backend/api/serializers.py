@@ -1,3 +1,4 @@
+from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
 from drf_base64.fields import Base64ImageField
 from rest_framework import serializers
@@ -5,6 +6,7 @@ from rest_framework import serializers
 from recipes.models import Ingredient, Recipe, RecipeIngredient, Subscribe, Tag
 from users.serializers import RecipeUserSerializer
 
+User = get_user_model()
 
 class TagSerializer(serializers.ModelSerializer):
 
@@ -223,6 +225,11 @@ class SubscribeSerializer(serializers.ModelSerializer):
             'recipes',
             'recipes_count'
         )
+
+    def create(self, validated_data):
+        author_data = validated_data.pop('author')
+        author = User.objects.create(**author_data)
+        return Subscribe.objects.create(author=author, **validated_data)
 
     def get_recipes(self, obj):
         request = self.context.get('request')
