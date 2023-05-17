@@ -76,34 +76,40 @@ class UserListSerializer(
 
 class UserCreateSerializer(serializers.ModelSerializer):
     id = serializers.CharField(
+        required=True,
         error_messages={
-            'required': 'Поле обязательно для заполнения.',
+            'required': 'Поле обязательно для заполнения.'
         }
     )
     username = serializers.CharField(
+        required=True,
         error_messages={
-            'required': 'Поле обязательно для заполнения.',
+            'required': 'Поле обязательно для заполнения.'
         }
     )
     first_name = serializers.CharField(
+        required=True,
         error_messages={
-            'required': 'Поле обязательно для заполнения.',
+            'required': 'Поле обязательно для заполнения.'
         }
     )
     last_name = serializers.CharField(
+        required=True,
         error_messages={
-            'required': 'Поле обязательно для заполнения.',
+            'required': 'Поле обязательно для заполнения.'
         }
     )
     email = serializers.EmailField(
+        required=True,
         error_messages={
-            'invalid': 'Введите корректный адрес электронной почты.',
             'required': 'Поле обязательно для заполнения.',
+            'invalid': 'Введите корректный адрес электронной почты.'
         }
     )
     password = serializers.CharField(
+        required=True,
         error_messages={
-            'required': 'Поле обязательно для заполнения.',
+            'required': 'Поле обязательно для заполнения.'
         }
     )
 
