@@ -6,12 +6,12 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('v1.urls')),
     path(
-        'redoc/',
+        'api/docs/',
         TemplateView.as_view(template_name='redoc.html'),
         name='redoc'
     ),
     path(
-        'redoc/openapi-schema.yml',
+        'api/docs/openapi-schema.yml',
         TemplateView.as_view(
             template_name='openapi-schema.yml',
             content_type='application/x-yaml'
