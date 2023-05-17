@@ -153,7 +153,7 @@ class UserPasswordSerializer(serializers.Serializer):
         try:
             validate_password(new_password)
         except ValidationError as e:
-            raise serializers.ValidationError(e.messages[0])
+            raise serializers.ValidationError(e.messages)
 
         return new_password
 
