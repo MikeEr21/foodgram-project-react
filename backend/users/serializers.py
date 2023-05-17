@@ -1,6 +1,6 @@
 import django.contrib.auth.password_validation as validators
 from django.contrib.auth import authenticate, get_user_model
-# from django.contrib.auth.hashers import make_password
+from django.contrib.auth.hashers import make_password
 from django.contrib.auth.password_validation import (ValidationError,
                                                      validate_password)
 from rest_framework import serializers
@@ -68,25 +68,33 @@ class UserListSerializer(
         model = User
         fields = (
             'email',
-            'id',
             'username',
             'first_name',
             'last_name',
             'is_subscribed'
         )
+        read_only_fields = ('id',)
 
 
 class UserCreateSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(write_only=True)
 
     class Meta:
         model = User
         fields = (
-            'id',
             'email',
             'username',
             'first_name',
             'last_name',
-            'password',)
+            'password',
+        )
+
+    def create(self, validated_data):
+        password = validated_data.pop('password')
+        user = super().create(validated_data)
+        user.set_password(password)
+        user.save()
+        return user
 
     def validate_password(self, password):
         validators.validate_password(password)
@@ -119,23 +127,12 @@ class UserPasswordSerializer(serializers.Serializer):
 
         return new_password
 
-    # def create(self, validated_data):
-    #     user = self.context['request'].user
-    #     password = make_password(
-    #         validated_data.get('new_password')
-    #     )
-    #     user.password = password
-    #     user.save()
-    #     return validated_data
-
     def create(self, validated_data):
-        user = User(
-            email=validated_data['email'],
-            username=validated_data['username'],
-            first_name=validated_data['first_name'],
-            last_name=validated_data['last_name'],
+        user = self.context['request'].user
+        password = make_password(
+            validated_data.get('new_password')
         )
-        user.set_password(validated_data['password'])
+        user.password = password
         user.save()
         return validated_data
 
