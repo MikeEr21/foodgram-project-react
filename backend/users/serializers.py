@@ -90,7 +90,11 @@ class UserCreateSerializer(serializers.ModelSerializer):
         )
 
     def validate_username(self, value):
-        if len(value) < 3:
+        if value['username'] == "me":
+            raise serializers.ValidationError(
+                "Имя пользователя 'ME' недоступно"
+            )
+        if len(value['username']) < 3:
             raise serializers.ValidationError(
                 'Логин должен быть не короче трёх символов.'
             )
