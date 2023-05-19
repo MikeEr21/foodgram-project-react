@@ -2,6 +2,7 @@ from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
 from drf_base64.fields import Base64ImageField
 from rest_framework import serializers
+from rest_framework.response import Response
 
 from recipes.models import Ingredient, Recipe, RecipeIngredient, Subscribe, Tag
 from users.serializers import RecipeUserSerializer
@@ -95,11 +96,11 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
         tags = data['tags']
         if not tags:
             raise serializers.ValidationError(
-                'Нужен хотя бы один тэг для рецепта!')
+                'Нужен хотя бы один тег для рецепта!')
         for tag_name in tags:
             if not Tag.objects.filter(name=tag_name).exists():
                 raise serializers.ValidationError(
-                    f'Тэга {tag_name} не существует!')
+                    f'Тега {tag_name} не существует!')
         return data
 
     def validate_cooking_time(self, cooking_time):
@@ -114,8 +115,11 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
                 'Мин. 1 ингредиент в рецепте!')
         for ingredient in ingredients:
             if int(ingredient.get('amount')) < 1:
-                raise serializers.ValidationError(
-                    'Количество ингредиента >= 1!')
+                return Response(
+                    {"error": "Время приготовления >= 1!"},
+                    status=400
+                )
+
         return ingredients
 
     def create_ingredients(self, ingredients, recipe):
@@ -230,6 +234,9 @@ class SubscribeSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         author_data = validated_data.pop('author')
         author = User.objects.create(**author_data)
+        request_user = self.context['request'].user
+        if request_user == author:
+            raise serializers.ValidationError('Нельзя подписаться на самого себя')
         return Subscribe.objects.create(author=author, **validated_data)
 
     def get_recipes(self, obj):
