@@ -3,6 +3,8 @@
 [![foodgram-project-react workflow](https://github.com/MikeEr21/foodgram-project-react/actions/workflows/foodgram.yml/badge.svg)](https://github.com/MikeEr21/foodgram-project-react/actions/workflows/foodgram.yml)
 ![Deploy_badge](https://github.com/MikeEr21/foodgram-project-react/actions/workflows/foodgram.yml/badge.svg)
 
+### Описание проекта Foodgram
+«Продуктовый помощник»: сайт где можно публикавать рецепты кулинарных изделий, подписываться на публикации других авторов, а также добавлять рецепты в избранные и формировать список покупок, позволяющий пользователю скачать его. В списке будут указаны продукты, которые нужно купить для приготовления выбранных блюд.
 
 ### Технологии
 * Python 3.9
@@ -37,3 +39,7 @@ http://158.160.39.23/admin/
 
 ### Автор
 Михаил Ермолаев
+
+sansouci@ya.ru
+
+https://github.com/MikeEr21
