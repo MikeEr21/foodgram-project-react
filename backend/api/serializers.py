@@ -236,8 +236,13 @@ class SubscribeSerializer(serializers.ModelSerializer):
         author = User.objects.create(**author_data)
         request_user = self.context['request'].user
         if request_user == author:
-            raise serializers.ValidationError('Нельзя подписаться на самого себя')
-        return Subscribe.objects.create(author=author, **validated_data)
+            raise serializers.ValidationError(
+                'Нельзя подписаться на самого себя'
+            )
+        return Subscribe.objects.create(
+            author=author,
+            **validated_data
+        )
 
     def get_recipes(self, obj):
         request = self.context.get('request')
