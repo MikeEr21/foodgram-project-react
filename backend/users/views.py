@@ -60,14 +60,20 @@ class UsersViewSet(UserViewSet):
             context={'request': request})
         return self.get_paginated_response(serializer.data)
 
+
 @api_view(['POST'])
 def create_user(request):
     serializer = UserCreateSerializer(data=request.data)
     if serializer.is_valid():
         user = serializer.save()
-        return Response(UserCreateSerializer(user).data, status=status.HTTP_201_CREATED)
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
+        return Response(
+            UserCreateSerializer(user).data,
+            status=status.HTTP_201_CREATED
+        )
+    return Response(
+        serializer.errors,
+        status=status.HTTP_400_BAD_REQUEST
+    )
 
 
 @api_view(['post'])
