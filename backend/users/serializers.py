@@ -89,6 +89,11 @@ class UserCreateSerializer(serializers.ModelSerializer):
             'password',
         )
 
+    def validate_username(self, value):
+        if len(value) < 3:
+            raise serializers.ValidationError('Логин должен быть не короче трёх символов.')
+        return value
+
     def create(self, validated_data):
         password = validated_data.pop('password')
         user = super().create(validated_data)
