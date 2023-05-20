@@ -219,9 +219,9 @@ class SubscribeSerializer(serializers.ModelSerializer):
             'recipes_count'
         )
 
-    def create(self, validated_data):
-        author_data = validated_data.pop('author')
-        author = User.objects.create(**author_data)
+    def validate(self, data):
+        author_id = data.get('author').get('id')
+        author = User.objects.get(id=author_id)
         request_user = self.context['request'].user
         if request_user.id == author.id:
             raise serializers.ValidationError(
@@ -231,6 +231,11 @@ class SubscribeSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(
                 'Уже подписан!'
             )
+        return data
+
+    def create(self, validated_data):
+        author_data = validated_data.pop('author')
+        author = User.objects.get(id=author_data.get('id'))
         return Subscribe.objects.create(
             author=author,
             **validated_data
