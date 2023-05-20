@@ -112,12 +112,12 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
     def validate_ingredients(self, ingredients):
         if not ingredients:
             raise serializers.ValidationError(
-                'Мин. 1 ингредиент в рецепте!')
+                'Мин. 1 ингредиент в рецепте!'
+            )
         for ingredient in ingredients:
             if int(ingredient.get('amount')) < 1:
-                return Response(
-                    {"error": "Время приготовления >= 1!"},
-                    status=400
+                raise serializers.ValidationError(
+                    "Время приготовления >= 1!"
                 )
 
         return ingredients
