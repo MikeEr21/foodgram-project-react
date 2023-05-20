@@ -109,18 +109,6 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
             )
         return cooking_time
 
-    # def validate_ingredients(self, ingredients):
-    #     if not ingredients:
-    #         raise serializers.ValidationError(
-    #             'Мин. 1 ингредиент в рецепте!'
-    #         )
-    #     for ingredient in ingredients:
-    #         if int(ingredient.get('amount')) < 1:
-    #             raise serializers.ValidationError(
-    #                 "Время приготовления >= 1!"
-    #             )
-    #     return ingredients
-
     def create_ingredients(self, ingredients, recipe):
         for ingredient in ingredients:
             RecipeIngredient.objects.create(
@@ -235,9 +223,13 @@ class SubscribeSerializer(serializers.ModelSerializer):
         author_data = validated_data.pop('author')
         author = User.objects.create(**author_data)
         request_user = self.context['request'].user
-        if request_user == author:
+        if request_user.id == author.id:
             raise serializers.ValidationError(
-                'Нельзя подписаться на самого себя'
+                'На самого себя не подписаться!'
+            )
+        if request_user.follower.filter(author=author).exists():
+            raise serializers.ValidationError(
+                'Уже подписан!'
             )
         return Subscribe.objects.create(
             author=author,
