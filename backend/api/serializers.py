@@ -2,7 +2,7 @@ from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
 from drf_base64.fields import Base64ImageField
 from rest_framework import serializers
-# from rest_framework.response import Response
+from rest_framework.response import Response
 
 from recipes.models import Ingredient, Recipe, RecipeIngredient, Subscribe, Tag
 from users.serializers import RecipeUserSerializer
@@ -116,8 +116,9 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
             )
         for ingredient in ingredients:
             if int(ingredient.get('amount')) < 1:
-                raise serializers.ValidationError(
-                    "Время приготовления >= 1!"
+                return Response(
+                    {"error": "Время приготовления >= 1!"},
+                    status=400
                 )
 
         return ingredients
