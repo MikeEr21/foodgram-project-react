@@ -1,15 +1,14 @@
+from api.serializers import SubscribeSerializer
 from django.contrib.auth import get_user_model
 from django.db.models.expressions import Exists, OuterRef, Value
 from djoser.views import UserViewSet
+from recipes.models import Subscribe
 from rest_framework import status
 from rest_framework.authtoken.models import Token
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.decorators import action, api_view
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
-
-from api.serializers import SubscribeSerializer
-from recipes.models import Subscribe
 from users.serializers import (TokenSerializer, UserCreateSerializer,
                                UserListSerializer, UserPasswordSerializer)
 
@@ -59,21 +58,21 @@ class UsersViewSet(UserViewSet):
             pages, many=True,
             context={'request': request})
         return self.get_paginated_response(serializer.data)
-
-
-@api_view(['POST'])
-def create_user(request):
-    serializer = UserCreateSerializer(data=request.data)
-    if serializer.is_valid():
-        user = serializer.save()
-        return Response(
-            UserCreateSerializer(user).data,
-            status=status.HTTP_201_CREATED
-        )
-    return Response(
-        serializer.errors,
-        status=status.HTTP_400_BAD_REQUEST
-    )
+#
+#
+# @api_view(['POST'])
+# def create_user(request):
+#     serializer = UserCreateSerializer(data=request.data)
+#     if serializer.is_valid():
+#         user = serializer.save()
+#         return Response(
+#             UserCreateSerializer(user).data,
+#             status=status.HTTP_201_CREATED
+#         )
+#     return Response(
+#         serializer.errors,
+#         status=status.HTTP_400_BAD_REQUEST
+#     )
 
 
 @api_view(['post'])
