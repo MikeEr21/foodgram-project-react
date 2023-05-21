@@ -3,7 +3,7 @@ from api.views import (AddAndDeleteSubscribe, AddDeleteFavoriteRecipe,
                        RecipesViewSet, TagsViewSet)
 from django.urls import include, path
 from rest_framework.routers import DefaultRouter
-from users.views import AuthToken, UsersViewSet, create_user, set_password
+from users.views import AuthToken, UsersViewSet, set_password
 
 app_name = 'api'
 
