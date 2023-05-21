@@ -51,8 +51,6 @@ class AddAndDeleteSubscribe(
 
     def create(self, request, *args, **kwargs):
         instance = self.get_object()
-        serializer = self.get_serializer(data={'author': instance.id})
-        serializer.is_valid(raise_exception=True)
         subs = request.user.follower.create(author=instance)
         serializer = self.get_serializer(subs)
         return Response(serializer.data, status=status.HTTP_201_CREATED)

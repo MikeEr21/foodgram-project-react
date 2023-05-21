@@ -27,7 +27,23 @@ const SubscriptionsPage = () => {
   useEffect(_ => {
     getSubscriptions({ page: subscriptionsPage })
   }, [subscriptionsPage])
-
+const subscribeToUser = (userId) => {
+    api.subscribe(userId)
+      .then(response => {
+        // handle successful case
+        getSubscriptions({ page: subscriptionsPage })  // fetch updated subscriptions
+      })
+      .catch(error => {
+        // Handle API errors
+        if (error.response) {
+          alert(error.response.data.detail);
+        } else if (error.request) {
+          alert('There was a problem with the request. Please try again.')
+        } else {
+          alert('There was an error. Please try again.');
+        }
+      });
+  };
 
   return <Main>
     <Container>
