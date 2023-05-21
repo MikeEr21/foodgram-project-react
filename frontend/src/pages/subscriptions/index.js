@@ -22,6 +22,11 @@ const SubscriptionsPage = () => {
         setSubscriptions(res.results)
         setSubscriptionsCount(res.count)
       })
+    .catch(error => {
+        if (error.response && error.response.status === 400) {
+          alert(error.response.data.errors);
+        }
+      });
   }
 
   useEffect(_ => {
