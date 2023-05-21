@@ -3,6 +3,7 @@ import { useSubscriptions } from '../../utils'
 import api from '../../api'
 import { useEffect } from 'react'
 import MetaTags from 'react-meta-tags'
+import { useState } from 'react';
 
 const SubscriptionsPage = () => {
   const {
@@ -14,6 +15,8 @@ const SubscriptionsPage = () => {
     subscriptionsPage,
     setSubscriptionsPage
   } = useSubscriptions()
+
+  const [error, setError] = useState(null);
 
   const getSubscriptions = ({ page }) => {
     api
@@ -35,7 +38,9 @@ const SubscriptionsPage = () => {
 
 
   return <Main>
+
     <Container>
+      {error && <div className="error-message">{error}</div>}
       <MetaTags>
         <title>Мои подписки</title>
         <meta name="description" content="Продуктовый помощник - Мои подписки" />
