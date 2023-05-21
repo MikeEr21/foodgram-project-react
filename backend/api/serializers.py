@@ -184,62 +184,26 @@ class SubscribeRecipeSerializer(serializers.ModelSerializer):
 
 class SubscribeSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(
-        source='author.id'
-    )
+        source='author.id')
     email = serializers.EmailField(
-        source='author.email'
-    )
+        source='author.email')
     username = serializers.CharField(
-        source='author.username'
-    )
+        source='author.username')
     first_name = serializers.CharField(
-        source='author.first_name'
-    )
+        source='author.first_name')
     last_name = serializers.CharField(
-        source='author.last_name'
-    )
+        source='author.last_name')
     recipes = serializers.SerializerMethodField()
     is_subscribed = serializers.BooleanField(
-        read_only=True
-    )
+        read_only=True)
     recipes_count = serializers.IntegerField(
-        read_only=True
-    )
+        read_only=True)
 
     class Meta:
         model = Subscribe
         fields = (
-            'email',
-            'id',
-            'username',
-            'first_name',
-            'last_name',
-            'is_subscribed',
-            'recipes',
-            'recipes_count'
-        )
-
-    # def validate(self, data):
-    #     author_id = data.get('author').get('id')
-    #     author = User.objects.get(id=author_id)
-    #     request_user = self.context['request'].user
-    #     if request_user.id == author.id:
-    #         raise serializers.ValidationError(
-    #             'На самого себя не подписаться!'
-    #         )
-    #     if request_user.follower.filter(author=author).exists():
-    #         raise serializers.ValidationError(
-    #             'Уже подписан!'
-    #         )
-    #     return data
-
-    def create(self, validated_data):
-        author_data = validated_data.pop('author')
-        author = User.objects.get(id=author_data.get('id'))
-        return Subscribe.objects.create(
-            author=author,
-            **validated_data
-        )
+            'email', 'id', 'username', 'first_name', 'last_name',
+            'is_subscribed', 'recipes', 'recipes_count',)
 
     def get_recipes(self, obj):
         request = self.context.get('request')
@@ -249,5 +213,4 @@ class SubscribeSerializer(serializers.ModelSerializer):
             else obj.author.recipe.all())
         return SubscribeRecipeSerializer(
             recipes,
-            many=True
-        ).data
+            many=True).data

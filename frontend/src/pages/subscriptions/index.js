@@ -1,5 +1,5 @@
 import { Title, Pagination, Container, Main, SubscriptionList  } from '../../components'
-import {useFormWithValidation, useSubscriptions} from '../../utils'
+import { useSubscriptions } from '../../utils'
 import api from '../../api'
 import { useEffect } from 'react'
 import MetaTags from 'react-meta-tags'
@@ -14,8 +14,6 @@ const SubscriptionsPage = () => {
     subscriptionsPage,
     setSubscriptionsPage
   } = useSubscriptions()
-
-  const { error, setErrors } = useFormWithValidation();
 
   const getSubscriptions = ({ page }) => {
     api

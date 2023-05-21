@@ -29,8 +29,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 class AddAndDeleteSubscribe(
         generics.RetrieveDestroyAPIView,
-        generics.ListCreateAPIView
-):
+        generics.ListCreateAPIView):
+    """Подписка и отписка от пользователя."""
+
     serializer_class = SubscribeSerializer
 
     def get_queryset(self):
@@ -40,8 +41,7 @@ class AddAndDeleteSubscribe(
             'following__recipe'
         ).annotate(
             recipes_count=Count('following__recipe'),
-            is_subscribed=Value(True),
-        )
+            is_subscribed=Value(True), )
 
     def get_object(self):
         user_id = self.kwargs['user_id']
