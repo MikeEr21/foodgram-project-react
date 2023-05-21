@@ -9,8 +9,8 @@ from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.decorators import action, api_view
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
-from users.serializers import (TokenSerializer,
-                               UserListSerializer, UserPasswordSerializer)
+from users.serializers import (TokenSerializer, UserListSerializer,
+                               UserPasswordSerializer)
 
 User = get_user_model()
 
