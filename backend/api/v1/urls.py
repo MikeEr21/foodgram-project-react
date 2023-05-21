@@ -40,11 +40,11 @@ urlpatterns = [
           AddDeleteShoppingCart.as_view(),
           name='shopping_cart'
      ),
-     path(
-          'api/v1/users/',
-          create_user,
-          name='create_user'
-     ),
+     # path(
+     #      'api/v1/users/',
+     #      create_user,
+     #      name='create_user'
+     # ),
 
      path('', include(router_v1.urls)),
      path('', include('djoser.urls')),

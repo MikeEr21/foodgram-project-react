@@ -10,7 +10,7 @@ from rest_framework.decorators import action, api_view
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from users.serializers import (TokenSerializer, UserListSerializer,
-                               UserPasswordSerializer)
+                               UserPasswordSerializer, UserCreateSerializer)
 
 User = get_user_model()
 
@@ -58,8 +58,8 @@ class UsersViewSet(UserViewSet):
             pages, many=True,
             context={'request': request})
         return self.get_paginated_response(serializer.data)
-#
-#
+
+
 # @api_view(['POST'])
 # def create_user(request):
 #     serializer = UserCreateSerializer(data=request.data)
