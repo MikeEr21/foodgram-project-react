@@ -15,8 +15,9 @@ const SubscriptionsPage = () => {
     setSubscriptionsPage
   } = useSubscriptions()
 
+  const { error, setErrors } = useFormWithValidation();
+
   const getSubscriptions = ({ page }) => {
-    const { errors } = useFormWithValidation()
     api
       .getSubscriptions({ page })
       .then(res => {
