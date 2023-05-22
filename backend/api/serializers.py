@@ -223,15 +223,15 @@ class SubscribeSerializer(serializers.ModelSerializer):
             'recipes_count',
         )
 
-    def validate(self, validated_data):
-        author_data = validated_data.pop('author')
-        author = User.objects.create(**author_data)
-        request_user = self.context['request'].user
-        if request_user == author:
-            raise serializers.ValidationError(
-                'Нельзя подписаться на самого себя'
-            )
-        return validated_data
+    # def validate(self, validated_data):
+    #     author_data = validated_data.pop('author')
+    #     author = User.objects.create(**author_data)
+    #     request_user = self.context['request'].user
+    #     if request_user == author:
+    #         raise serializers.ValidationError(
+    #             'Нельзя подписаться на самого себя'
+    #         )
+    #     return validated_data
 
     def get_recipes(self, obj):
         request = self.context.get('request')

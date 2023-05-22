@@ -40,7 +40,6 @@ const SubscriptionsPage = () => {
   return <Main>
 
     <Container>
-      {error && <div className="error-message">{error}</div>}
       <MetaTags>
         <title>Мои подписки</title>
         <meta name="description" content="Продуктовый помощник - Мои подписки" />
