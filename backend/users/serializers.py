@@ -89,18 +89,16 @@ class UserCreateSerializer(serializers.ModelSerializer):
             'password',
         )
 
-    def validate_username(self, value):
-        if value['username'] == "me":
+    def validate_username(self, username):
+        if username == "me":
             raise serializers.ValidationError(
-                {'username': "Имя пользователя 'ME' недоступно"}
+                "Имя пользователя 'ME' недоступно"
             )
-        if len(value['username']) < 3:
+        if len(username) < 3:
             raise serializers.ValidationError(
-                {
-                    'username': 'Логин должен быть не короче трёх символов.'
-                }
+                'Логин должен быть не короче трёх символов.'
             )
-        return value
+        return username
 
     def create(self, validated_data):
         password = validated_data.pop('password')
