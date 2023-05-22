@@ -5,7 +5,8 @@ from api.filters import IngredientFilter, RecipeFilter
 from api.mixins import GetObjectMixin, PermissionAndPaginationMixin
 from api.serializers import (IngredientSerializer, RecipeReadSerializer,
                              RecipeWriteSerializer, SubscribeSerializer,
-                             TagSerializer, UserListSerializer)
+                             TagSerializer)
+from users.serializers import UserListSerializer
 from django.contrib.auth import get_user_model
 from django.db.models.aggregates import Count, Sum
 from django.db.models.expressions import Exists, OuterRef, Value
