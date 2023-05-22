@@ -9,13 +9,13 @@ User = get_user_model()
 ERR_MSG = 'Не удаётся войти в систему с предоставленными учётными данными.'
 
 
-# class GetIsSubscribedMixin:
-#
-#     def get_is_subscribed(self, obj):
-#         user = self.context['request'].user
-#         if not user.is_authenticated:
-#             return False
-#         return user.follower.filter(author=obj).exists()
+class GetIsSubscribedMixin:
+
+    def get_is_subscribed(self, obj):
+        user = self.context['request'].user
+        if not user.is_authenticated:
+            return False
+        return user.follower.filter(author=obj).exists()
 
 
 class TokenSerializer(serializers.Serializer):
@@ -58,7 +58,10 @@ class TokenSerializer(serializers.Serializer):
         return attrs
 
 
-class UserListSerializer(serializers.ModelSerializer):
+class UserListSerializer(
+        GetIsSubscribedMixin,
+        serializers.ModelSerializer
+):
     is_subscribed = serializers.BooleanField(read_only=True)
 
     class Meta:
@@ -71,12 +74,6 @@ class UserListSerializer(serializers.ModelSerializer):
             'is_subscribed'
         )
         read_only_fields = ('id',)
-
-    def get_is_subscribed(self, obj):
-        user = self.context['request'].user
-        if not user.is_authenticated:
-            return False
-        return user.follower.filter(author=obj).exists()
 
 
 class UserCreateSerializer(serializers.ModelSerializer):
@@ -152,6 +149,7 @@ class UserPasswordSerializer(serializers.Serializer):
 
 
 class RecipeUserSerializer(
+    GetIsSubscribedMixin,
     serializers.ModelSerializer
 ):
 
@@ -169,9 +167,3 @@ class RecipeUserSerializer(
             'last_name',
             'is_subscribed'
         )
-
-    def get_is_subscribed(self, obj):
-        user = self.context['request'].user
-        if not user.is_authenticated:
-            return False
-        return user.follower.filter(author=obj).exists()

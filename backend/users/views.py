@@ -36,8 +36,8 @@ class UsersViewSet(UserViewSet):
 
     def get_serializer_class(self):
         if self.action == 'create':
-            return UserCreateSerializer
-        return UserListSerializer
+            return UserListSerializer
+        return UserCreateSerializer
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
