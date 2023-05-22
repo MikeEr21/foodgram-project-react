@@ -35,7 +35,7 @@ class UsersViewSet(UserViewSet):
     permission_classes = (IsAuthenticated,)
 
     def get_serializer_class(self):
-        if self.request.method.lower() == 'post':
+        if self.request.method == 'POST':
             return UserCreateSerializer
         return UserListSerializer
 
@@ -65,19 +65,19 @@ class UsersViewSet(UserViewSet):
         return self.get_paginated_response(serializer.data)
 
 
-# @api_view(['POST'])
-# def create_user(request):
-#     serializer = UserCreateSerializer(data=request.data)
-#     if serializer.is_valid():
-#         user = serializer.save()
-#         return Response(
-#             UserCreateSerializer(user).data,
-#             status=status.HTTP_201_CREATED
-#         )
-#     return Response(
-#         serializer.errors,
-#         status=status.HTTP_400_BAD_REQUEST
-#     )
+@api_view(['POST'])
+def create_user(request):
+    serializer = UserCreateSerializer(data=request.data)
+    if serializer.is_valid():
+        user = serializer.save()
+        return Response(
+            UserCreateSerializer(user).data,
+            status=status.HTTP_201_CREATED
+        )
+    return Response(
+        serializer.errors,
+        status=status.HTTP_400_BAD_REQUEST
+    )
 
 
 @api_view(['post'])

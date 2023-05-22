@@ -188,20 +188,27 @@ class SubscribeRecipeSerializer(serializers.ModelSerializer):
 
 class SubscribeSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(
-        source='author.id')
+        source='author.id'
+    )
     email = serializers.EmailField(
-        source='author.email')
+        source='author.email'
+    )
     username = serializers.CharField(
-        source='author.username')
+        source='author.username'
+    )
     first_name = serializers.CharField(
-        source='author.first_name')
+        source='author.first_name'
+    )
     last_name = serializers.CharField(
-        source='author.last_name')
+        source='author.last_name'
+    )
     recipes = serializers.SerializerMethodField()
     is_subscribed = serializers.BooleanField(
-        read_only=True)
+        read_only=True
+    )
     recipes_count = serializers.IntegerField(
-        read_only=True)
+        read_only=True
+    )
 
     class Meta:
         model = Subscribe
@@ -234,4 +241,5 @@ class SubscribeSerializer(serializers.ModelSerializer):
             else obj.author.recipe.all())
         return SubscribeRecipeSerializer(
             recipes,
-            many=True).data
+            many=True
+        ).data
