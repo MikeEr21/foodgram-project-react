@@ -220,19 +220,18 @@ class SubscribeSerializer(serializers.ModelSerializer):
             'last_name',
             'is_subscribed',
             'recipes',
-            'recipes_count',
-            'is_self',
+            'recipes_count'
         )
 
-    def get_is_subscribed(self, obj):
-        user = self.context.get('request').user
-        if user.is_anonymous or (user == obj):
-            return False
-        return user.subscriptions.filter(author=obj).exists()
-
-    def get_is_self(self, obj):
-        user = self.context.get('request').user
-        return user == obj
+    # def get_is_subscribed(self, obj):
+    #     user = self.context.get('request').user
+    #     if user.is_anonymous or (user == obj):
+    #         return False
+    #     return user.subscriptions.filter(author=obj).exists()
+    #
+    # def get_is_self(self, obj):
+    #     user = self.context.get('request').user
+    #     return user == obj
 
     # def validate(self, validated_data):
     #     author_data = validated_data.pop('author')
