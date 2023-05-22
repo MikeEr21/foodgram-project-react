@@ -6,7 +6,7 @@ from api.mixins import GetObjectMixin, PermissionAndPaginationMixin
 from api.serializers import (IngredientSerializer, RecipeReadSerializer,
                              RecipeWriteSerializer, SubscribeSerializer,
                              TagSerializer)
-from users.serializers import UserListSerializer
+from users.serializers import UserListSerializer, UserCreateSerializer
 from django.contrib.auth import get_user_model
 from django.db.models.aggregates import Count, Sum
 from django.db.models.expressions import Exists, OuterRef, Value
@@ -35,8 +35,8 @@ class AddAndDeleteSubscribe(
 
     def get_serializer_class(self):
         if self.request.method.lower() == 'post':
-            return UserListSerializer
-        return SubscribeSerializer
+            return UserCreateSerializer
+        return UserListSerializer
 
     def get_queryset(self):
         return self.request.user.follower.select_related(
