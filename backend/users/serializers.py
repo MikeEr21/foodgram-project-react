@@ -75,6 +75,12 @@ class UserListSerializer(
         )
         read_only_fields = ('id',)
 
+    def get_is_subscribed(self, obj):
+        user = self.context.get('request').user
+        if user.is_anonymous or (user == obj):
+            return False
+        return user.subscriptions.filter(author=obj).exists()
+
 
 class UserCreateSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
