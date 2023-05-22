@@ -34,11 +34,6 @@ class UsersViewSet(UserViewSet):
     serializer_class = UserListSerializer
     permission_classes = (IsAuthenticated,)
 
-    def get_serializer_class(self):
-        if self.request.method == 'POST':
-            return UserCreateSerializer
-        return UserListSerializer
-
     def get_queryset(self):
         return User.objects.annotate(
             is_subscribed=Exists(
