@@ -89,7 +89,12 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
                 Ingredient, id=items['id'])
             if ingredient in ingredient_list:
                 raise serializers.ValidationError(
-                    'Ингредиент должен быть уникальным!')
+                    'Ингредиент должен быть уникальным!'
+                )
+            if int(items['amount']) <= 0:
+                raise serializers.ValidationError(
+                    {'amount': 'Количество ингредиента должно быть больше 0!'}
+                )
             ingredient_list.append(ingredient)
         tags = data['tags']
         if not tags:
