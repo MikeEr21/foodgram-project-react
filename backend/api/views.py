@@ -6,7 +6,6 @@ from api.mixins import GetObjectMixin, PermissionAndPaginationMixin
 from api.serializers import (IngredientSerializer, RecipeReadSerializer,
                              RecipeWriteSerializer, SubscribeSerializer,
                              TagSerializer)
-from users.serializers import UserListSerializer, UserCreateSerializer
 from django.contrib.auth import get_user_model
 from django.db.models.aggregates import Count, Sum
 from django.db.models.expressions import Exists, OuterRef, Value
@@ -22,6 +21,7 @@ from rest_framework.decorators import action
 from rest_framework.permissions import (SAFE_METHODS, IsAuthenticated,
                                         IsAuthenticatedOrReadOnly)
 from rest_framework.response import Response
+from users.serializers import UserCreateSerializer, UserListSerializer
 
 User = get_user_model()
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
