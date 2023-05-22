@@ -21,7 +21,6 @@ from rest_framework.decorators import action
 from rest_framework.permissions import (SAFE_METHODS, IsAuthenticated,
                                         IsAuthenticatedOrReadOnly)
 from rest_framework.response import Response
-from users.serializers import UserListSerializer
 
 User = get_user_model()
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -33,10 +32,10 @@ class AddAndDeleteSubscribe(
 ):
     serializer_class = SubscribeSerializer
 
-    def get_serializer_class(self):
-        if self.request.method.lower() == 'post':
-            return SubscribeSerializer
-        return UserListSerializer
+    # def get_serializer_class(self):
+    #     if self.request.method.lower() == 'post':
+    #         return SubscribeSerializer
+    #     return UserListSerializer
 
     def get_queryset(self):
         return self.request.user.follower.select_related(
