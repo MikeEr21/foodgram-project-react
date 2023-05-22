@@ -3,7 +3,7 @@ from api.views import (AddAndDeleteSubscribe, AddDeleteFavoriteRecipe,
                        RecipesViewSet, TagsViewSet)
 from django.urls import include, path
 from rest_framework.routers import DefaultRouter
-from users.views import AuthToken, UsersViewSet, create_user, set_password
+from users.views import AuthToken, UsersViewSet, set_password
 
 app_name = 'api'
 
@@ -39,11 +39,6 @@ urlpatterns = [
           'recipes/<int:recipe_id>/shopping_cart/',
           AddDeleteShoppingCart.as_view(),
           name='shopping_cart'
-     ),
-     path(
-          'users/',
-          create_user,
-          name='create_user'
      ),
 
      path('', include(router_v1.urls)),

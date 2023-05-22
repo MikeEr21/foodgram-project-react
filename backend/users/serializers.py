@@ -89,7 +89,7 @@ class UserCreateSerializer(serializers.ModelSerializer):
             'password',
         )
 
-    def validate(self, value):
+    def validate_username(self, value):
         if value['username'] == "me":
             raise serializers.ValidationError(
                 {'username': "Имя пользователя 'ME' недоступно"}
