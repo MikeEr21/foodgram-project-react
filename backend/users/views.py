@@ -10,7 +10,7 @@ from rest_framework.decorators import action, api_view
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from users.serializers import (TokenSerializer, UserListSerializer,
-                               UserPasswordSerializer)
+                               UserPasswordSerializer, UserCreateSerializer)
 
 User = get_user_model()
 
@@ -33,6 +33,11 @@ class AuthToken(ObtainAuthToken):
 class UsersViewSet(UserViewSet):
     serializer_class = UserListSerializer
     permission_classes = (IsAuthenticated,)
+
+    def get_serializer_class(self):
+        if self.request.method.lower() == 'post':
+            return UserCreateSerializer
+        return UserListSerializer
 
     def get_queryset(self):
         return User.objects.annotate(
