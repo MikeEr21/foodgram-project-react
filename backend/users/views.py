@@ -9,8 +9,8 @@ from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.decorators import action, api_view
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
-from users.serializers import (TokenSerializer, UserListSerializer,
-                               UserPasswordSerializer)
+from users.serializers import (TokenSerializer, UserCreateSerializer,
+                               UserListSerializer, UserPasswordSerializer)
 
 User = get_user_model()
 
@@ -33,6 +33,20 @@ class AuthToken(ObtainAuthToken):
 class UsersViewSet(UserViewSet):
     serializer_class = UserListSerializer
     permission_classes = (IsAuthenticated,)
+
+    def get_serializer_class(self):
+        if self.action == 'create':
+            return UserCreateSerializer
+        return super().get_serializer_class()
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.save()
+        return Response(
+            UserListSerializer(user).data,
+            status=status.HTTP_201_CREATED
+        )
 
     def get_queryset(self):
         return User.objects.annotate(
