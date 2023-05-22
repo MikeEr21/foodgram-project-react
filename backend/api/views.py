@@ -32,11 +32,6 @@ class AddAndDeleteSubscribe(
 ):
     serializer_class = SubscribeSerializer
 
-    # def get_serializer_class(self):
-    #     if self.request.method.lower() == 'post':
-    #         return SubscribeSerializer
-    #     return UserListSerializer
-
     def get_queryset(self):
         return self.request.user.follower.select_related(
             'following'
