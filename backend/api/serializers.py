@@ -209,6 +209,7 @@ class SubscribeSerializer(serializers.ModelSerializer):
     recipes_count = serializers.IntegerField(
         read_only=True
     )
+    is_self = serializers.SerializerMethodField()
 
     class Meta:
         model = Subscribe
@@ -220,7 +221,8 @@ class SubscribeSerializer(serializers.ModelSerializer):
             'last_name',
             'is_subscribed',
             'recipes',
-            'recipes_count'
+            'recipes_count',
+            'is_self'
         )
 
     def get_is_subscribed(self, obj):
@@ -229,9 +231,9 @@ class SubscribeSerializer(serializers.ModelSerializer):
             return False
         return user.subscriptions.filter(author=obj).exists()
 
-    # def get_is_self(self, obj):
-    #     user = self.context.get('request').user
-    #     return user == obj
+    def get_is_self(self, obj):
+        user = self.context.get('request').user
+        return user == obj
 
     # def validate(self, validated_data):
     #     author_data = validated_data.pop('author')
