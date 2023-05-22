@@ -63,7 +63,6 @@ class UserListSerializer(
         serializers.ModelSerializer
 ):
     is_subscribed = serializers.BooleanField(read_only=True)
-    is_self = serializers.SerializerMethodField()
 
     class Meta:
         model = User
@@ -72,20 +71,9 @@ class UserListSerializer(
             'username',
             'first_name',
             'last_name',
-            'is_subscribed',
-            'is_self'
+            'is_subscribed'
         )
         read_only_fields = ('id',)
-
-    def get_is_subscribed(self, obj):
-        user = self.context.get('request').user
-        if user.is_anonymous or (user == obj):
-            return False
-        return user.subscriptions.filter(author=obj).exists()
-
-    def get_is_self(self, obj):
-        user = self.context.get('request').user
-        return user == obj
 
 
 class UserCreateSerializer(serializers.ModelSerializer):
