@@ -73,6 +73,7 @@ class UsersViewSet(UserViewSet):
             context={'request': request})
         return self.get_paginated_response(serializer.data)
 
+
 @api_view(['post'])
 def set_password(request):
     serializer = UserPasswordSerializer(
