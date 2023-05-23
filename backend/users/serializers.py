@@ -13,9 +13,9 @@ class GetIsSubscribedMixin:
 
     def get_is_subscribed(self, obj):
         user = self.context.get('request').user
-        if not user.is_authenticated:
-            return False
-        return user.follower.filter(author=obj).exists()
+        if user.is_authenticated:
+            return user.follower.filter(user=user, author=obj).exists()
+        return False
 
 
 class TokenSerializer(serializers.Serializer):
