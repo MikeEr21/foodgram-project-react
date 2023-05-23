@@ -1,6 +1,6 @@
 from api.serializers import SubscribeSerializer
 from django.contrib.auth import get_user_model
-from django.db.models.expressions import Exists, OuterRef #, Value
+from django.db.models.expressions import Exists, OuterRef
 from djoser.views import UserViewSet
 from recipes.models import Subscribe
 from rest_framework import status
@@ -55,12 +55,13 @@ class UsersViewSet(UserViewSet):
                     author=OuterRef('id')
                 )
             )
-        ).prefetch_related('follower', 'following')
+        ).prefetch_related(
+            'follower', 'following'
+        )
         user_id = self.kwargs.get('pk')
         if user_id:
             queryset = queryset.exclude(id=user_id)
         return queryset
-
 
     @action(
         detail=False,
