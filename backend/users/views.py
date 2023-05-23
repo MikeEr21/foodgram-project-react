@@ -37,7 +37,7 @@ class UsersViewSet(UserViewSet):
     def get_serializer_class(self):
         if self.request.method.lower() == 'post':
             return UserCreateSerializer
-        return super().get_serializer_class()
+        return UserListSerializer
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -49,16 +49,19 @@ class UsersViewSet(UserViewSet):
         )
 
     def get_queryset(self):
-        return User.objects.annotate(
+        queryset = User.objects.annotate(
             is_subscribed=Exists(
                 self.request.user.follower.filter(
-                    author=OuterRef('id'))
+                    author=OuterRef('id')
+                )
             )
-        ).prefetch_related(
-                'follower', 'following'
-        ) if self.request.user.is_authenticated else User.objects.annotate(
-            is_subscribed=Value(False)
-        )
+        ).prefetch_related('follower', 'following')
+        user_id = self.kwargs.get('pk')
+        if user_id:
+            queryset = queryset.exclude(id=user_id)
+        return queryset
+
+
 
     @action(
         detail=False,
