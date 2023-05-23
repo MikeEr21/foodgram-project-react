@@ -1,6 +1,6 @@
 from api.serializers import SubscribeSerializer
 from django.contrib.auth import get_user_model
-from django.db.models.expressions import Exists, OuterRef, Value
+from django.db.models.expressions import Exists, OuterRef #, Value
 from djoser.views import UserViewSet
 from recipes.models import Subscribe
 from rest_framework import status
@@ -60,7 +60,6 @@ class UsersViewSet(UserViewSet):
         if user_id:
             queryset = queryset.exclude(id=user_id)
         return queryset
-
 
 
     @action(
