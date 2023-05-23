@@ -35,9 +35,9 @@ class UsersViewSet(UserViewSet):
     permission_classes = (IsAuthenticated,)
 
     def get_serializer_class(self):
-        if self.action == 'create':
+        if self.request.method.lower() == 'post':
             return UserCreateSerializer
-        return UserListSerializer
+        return super().get_serializer_class()
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -72,7 +72,6 @@ class UsersViewSet(UserViewSet):
             pages, many=True,
             context={'request': request})
         return self.get_paginated_response(serializer.data)
-
 
 @api_view(['post'])
 def set_password(request):
