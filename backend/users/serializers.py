@@ -75,6 +75,22 @@ class UserListSerializer(
         )
         read_only_fields = ('id',)
 
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        request = self.context.get('request')
+        if (
+                request and request.user.is_authenticated
+                and instance.id != request.user.id
+        ):
+            representation['is_subscribed'] = self.context[
+                'request'
+            ].user.follower.filter(
+                author=instance
+            ).exists()
+        else:
+            del representation['is_subscribed']
+        return representation
+
 
 class UserCreateSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
