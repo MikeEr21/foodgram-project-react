@@ -1,4 +1,4 @@
-from api.serializers import SubscribeSerializer
+# from api.serializers import SubscribeSerializer
 from django.contrib.auth import get_user_model
 from django.db.models.expressions import Exists, OuterRef
 from djoser.views import UserViewSet
