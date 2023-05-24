@@ -49,17 +49,19 @@ class UsersViewSet(UserViewSet):
         )
 
     def get_queryset(self):
-        return User.objects.annotate(
+        queryset = User.objects.annotate(
             is_subscribed=Exists(
                 self.request.user.follower.filter(
                     author=OuterRef('id')
                 )
             )
         ).prefetch_related(
-                'follower', 'following'
-        ) if self.request.user.is_authenticated else User.objects.annotate(
-            is_subscribed=Value(False)
+            'follower', 'following'
         )
+        user_id = self.kwargs.get('pk')
+        if user_id:
+            queryset = queryset.exclude(id=user_id)
+        return queryset
 
     @action(
         detail=False,

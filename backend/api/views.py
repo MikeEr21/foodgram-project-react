@@ -39,7 +39,8 @@ class AddAndDeleteSubscribe(
             'following__recipe'
         ).annotate(
             recipes_count=Count('following__recipe'),
-            is_subscribed=Value(True), )
+            is_subscribed=Value(True),
+        )
 
     def get_object(self):
         user_id = self.kwargs['user_id']
