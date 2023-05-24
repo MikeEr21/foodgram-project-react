@@ -12,10 +12,16 @@ ERR_MSG = 'Не удаётся войти в систему с предоста�
 class GetIsSubscribedMixin:
 
     def get_is_subscribed(self, obj):
-        user = self.context.get('request').user
-        if user.is_authenticated:
-            return user.follower.filter(user=user, author=obj).exists()
-        return False
+        user = self.context['request'].user
+        if not user.is_authenticated:
+            return False
+        return user.follower.filter(author=obj).exists()
+
+    # def get_is_subscribed(self, obj):
+    #     user = self.context.get('request').user
+    #     if user.is_authenticated:
+    #         return user.follower.filter(user=user, author=obj).exists()
+    #     return False
 
 
 class TokenSerializer(serializers.Serializer):
