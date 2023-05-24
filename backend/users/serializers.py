@@ -59,7 +59,6 @@ class TokenSerializer(serializers.Serializer):
 
 
 class UserListSerializer(
-        GetIsSubscribedMixin,
         serializers.ModelSerializer
 ):
     is_subscribed = serializers.BooleanField(read_only=True)
@@ -77,13 +76,8 @@ class UserListSerializer(
 
     def get_is_subscribed(self, instance):
         request = self.context.get('request')
-        if (
-                request and request.user.is_authenticated
-                and instance.id != request.user.id
-        ):
-            return request.user.follower.filter(
-                author=instance
-            ).exists()
+        if request and request.user.is_authenticated and instance.id != request.user.id:
+            return request.user.follower.filter(author=instance).exists()
         return None
 
     def to_representation(self, instance):
