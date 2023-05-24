@@ -74,7 +74,7 @@ class UserListSerializer(
             'last_name',
             'is_subscribed'
         )
-        read_only_fields = ('id',)
+        read_only_fields = ('id', 'is_subscribed', )
 
     def get_is_subscribed(self, obj):
         request = self.context.get('request')
