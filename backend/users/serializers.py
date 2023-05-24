@@ -62,7 +62,9 @@ class UserListSerializer(
         GetIsSubscribedMixin,
         serializers.ModelSerializer
 ):
-    is_subscribed = serializers.BooleanField(read_only=True)
+    is_subscribed = serializers.SerializerMethodField(
+        read_only=True
+    )
 
     class Meta:
         model = User
@@ -74,24 +76,6 @@ class UserListSerializer(
             'is_subscribed'
         )
         read_only_fields = ('id',)
-
-    # def get_is_subscribed(self, instance):
-    #     request = self.context.get('request')
-    #     if (
-    #             request and request.user.is_authenticated
-    #             and instance.id != request.user.id
-    #     ):
-    #         return request.user.follower.filter(
-    #             author=instance
-    #         ).exists()
-    #     return None
-    #
-    # def to_representation(self, instance):
-    #     representation = super().to_representation(instance)
-    #     is_subscribed = representation.get('is_subscribed')
-    #     if is_subscribed is None:
-    #         del representation['is_subscribed']
-    #     return representation
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)
