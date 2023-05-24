@@ -75,19 +75,21 @@ class UserListSerializer(
         )
         read_only_fields = ('id',)
 
-    def to_representation(self, instance):
-        representation = super().to_representation(instance)
+    def get_is_subscribed(self, instance):
         request = self.context.get('request')
         if (
                 request and request.user.is_authenticated
                 and instance.id != request.user.id
         ):
-            representation['is_subscribed'] = self.context[
-                'request'
-            ].user.follower.filter(
+            return request.user.follower.filter(
                 author=instance
             ).exists()
-        else:
+        return None
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        is_subscribed = representation.get('is_subscribed')
+        if is_subscribed is None:
             del representation['is_subscribed']
         return representation
 
