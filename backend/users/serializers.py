@@ -59,6 +59,7 @@ class TokenSerializer(serializers.Serializer):
 
 
 class UserListSerializer(
+        GetIsSubscribedMixin,
         serializers.ModelSerializer
 ):
     is_subscribed = serializers.BooleanField(read_only=True)
@@ -74,23 +75,35 @@ class UserListSerializer(
         )
         read_only_fields = ('id',)
 
-    def get_is_subscribed(self, instance):
-        request = self.context.get('request')
-        if (
-                request and request.user.is_authenticated
-                and instance.id != request.user.id
-        ):
-            return request.user.follower.filter(
-                author=instance
-            ).exists()
-        return None
+    # def get_is_subscribed(self, instance):
+    #     request = self.context.get('request')
+    #     if (
+    #             request and request.user.is_authenticated
+    #             and instance.id != request.user.id
+    #     ):
+    #         return request.user.follower.filter(
+    #             author=instance
+    #         ).exists()
+    #     return None
+    #
+    # def to_representation(self, instance):
+    #     representation = super().to_representation(instance)
+    #     is_subscribed = representation.get('is_subscribed')
+    #     if is_subscribed is None:
+    #         del representation['is_subscribed']
+    #     return representation
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)
-        is_subscribed = representation.get('is_subscribed')
-        if is_subscribed is None:
-            del representation['is_subscribed']
+        user = self.context.get('request').user
+        if user and user.is_authenticated:
+            is_subscribed = user.follower.filter(user=user, author=obj).exists()
+        else:
+            is_subscribed = False
+        representation['is_subscribed'] = is_subscribed
         return representation
+
+
 
 
 class UserCreateSerializer(serializers.ModelSerializer):
