@@ -1,6 +1,6 @@
-# from api.serializers import SubscribeSerializer
+from api.serializers import SubscribeSerializer
 from django.contrib.auth import get_user_model
-from django.db.models.expressions import Exists, OuterRef
+from django.db.models.expressions import Exists, OuterRef, Value
 from djoser.views import UserViewSet
 from recipes.models import Subscribe
 from rest_framework import status
@@ -39,17 +39,17 @@ class UsersViewSet(UserViewSet):
             return UserCreateSerializer
         return UserListSerializer
 
-    def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        user = serializer.save()
-        return Response(
-            UserListSerializer(user).data,
-            status=status.HTTP_201_CREATED
-        )
+    # def create(self, request, *args, **kwargs):
+    #     serializer = self.get_serializer(data=request.data)
+    #     serializer.is_valid(raise_exception=True)
+    #     user = serializer.save()
+    #     return Response(
+    #         UserListSerializer(user).data,
+    #         status=status.HTTP_201_CREATED
+    #     )
 
     def get_queryset(self):
-        queryset = User.objects.annotate(
+        return User.objects.annotate(
             is_subscribed=Exists(
                 self.request.user.follower.filter(
                     author=OuterRef('id')
@@ -57,11 +57,14 @@ class UsersViewSet(UserViewSet):
             )
         ).prefetch_related(
             'follower', 'following'
+        ) if self.request.user.is_authenticated else User.objects.annotate(
+            is_subscribed=Value(False)
         )
-        user_id = self.kwargs.get('pk')
-        if user_id:
-            queryset = queryset.exclude(id=user_id)
-        return queryset
+        # )
+        # user_id = self.kwargs.get('pk')
+        # if user_id:
+        #     queryset = queryset.exclude(id=user_id)
+        # return queryset
 
     @action(
         detail=False,
@@ -71,9 +74,10 @@ class UsersViewSet(UserViewSet):
         user = request.user
         queryset = Subscribe.objects.filter(user=user)
         pages = self.paginate_queryset(queryset)
-        serializer = UserListSerializer(
+        serializer = SubscribeSerializer(
             pages, many=True,
-            context={'request': request})
+            context={'request': request}
+        )
         return self.get_paginated_response(serializer.data)
 
 
