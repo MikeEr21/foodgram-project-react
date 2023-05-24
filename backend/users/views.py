@@ -35,7 +35,7 @@ class UsersViewSet(UserViewSet):
     permission_classes = (IsAuthenticated,)
 
     def get_serializer_class(self):
-        if self.request.method.lower() == 'post':
+        if self.action == 'create':
             return UserCreateSerializer
         return UserListSerializer
 
