@@ -97,13 +97,13 @@ class UserListSerializer(
         representation = super().to_representation(instance)
         user = self.context.get('request').user
         if user and user.is_authenticated:
-            is_subscribed = user.follower.filter(user=user, author=obj).exists()
+            is_subscribed = user.follower.filter(
+                user=user, author=instance
+            ).exists()
         else:
             is_subscribed = False
         representation['is_subscribed'] = is_subscribed
         return representation
-
-
 
 
 class UserCreateSerializer(serializers.ModelSerializer):
