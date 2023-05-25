@@ -50,6 +50,10 @@ const SingleCard = ({ loadItem, updateOrders }) => {
     is_favorited,
     is_in_shopping_cart
   } = recipe
+
+  console.log('Author data:', author)
+  console.log('User context:', userContext)
+
   
   return <Main>
     <Container>
