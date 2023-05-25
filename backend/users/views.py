@@ -1,4 +1,5 @@
 from api.serializers import SubscribeSerializer
+from django.contrib.auth.hashers import make_password
 from django.contrib.auth import get_user_model
 from django.db.models.expressions import Exists, OuterRef, Value
 from djoser.views import UserViewSet
@@ -48,6 +49,10 @@ class UsersViewSet(UserViewSet):
     #         UserListSerializer(user).data,
     #         status=status.HTTP_201_CREATED
     #     )
+
+    def perform_create(self, serializer):
+        password = make_password(self.request.data['password'])
+        serializer.save(password=password)
 
     def get_queryset(self):
         return User.objects.annotate(

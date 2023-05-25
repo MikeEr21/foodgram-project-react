@@ -74,7 +74,7 @@ const UserPage = ({ updateOrders }) => {
       })
   }, [])
 
-  console.log('Author data:', author)
+  console.log('User data:', user)
   console.log('User context:', userContext)
 
 
