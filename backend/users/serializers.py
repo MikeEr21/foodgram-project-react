@@ -17,12 +17,6 @@ class GetIsSubscribedMixin:
             return False
         return user.follower.filter(author=obj).exists()
 
-    # def get_is_subscribed(self, obj):
-    #     user = self.context.get('request').user
-    #     if user.is_authenticated:
-    #         return user.follower.filter(user=user, author=obj).exists()
-    #     return False
-
 
 class TokenSerializer(serializers.Serializer):
     email = serializers.CharField(
@@ -81,22 +75,6 @@ class UserListSerializer(
             'last_name',
             'is_subscribed'
         )
-        # read_only_fields = ('id', 'is_subscribed', )
-
-    # def get_is_subscribed(self, obj):
-    #     request = self.context.get('request')
-    #     user = request.user if request else None
-    #     if user and user.is_authenticated:
-    #         return user.follower.filter(author=obj).exists()
-    #     return False
-
-    # def to_representation(self, instance):
-    #     representation = super().to_representation(instance)
-    #     request = self.context.get('request')
-    #     user = request.user if request else None
-    #     if user and user.is_authenticated and user.id == instance.id:
-    #         del representation['is_subscribed']
-    #     return representation
 
 
 class UserCreateSerializer(serializers.ModelSerializer):
