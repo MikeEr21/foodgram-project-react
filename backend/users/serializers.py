@@ -88,13 +88,13 @@ class UserListSerializer(
             return user.follower.filter(user=user, author=obj).exists()
         return False
 
-    # def to_representation(self, instance):
-    #     representation = super().to_representation(instance)
-    #     request = self.context.get('request')
-    #     user = request.user if request else None
-    #     if user and user.is_authenticated and user.id == instance.id:
-    #         del representation['is_subscribed']
-    #     return representation
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        request = self.context.get('request')
+        user = request.user if request else None
+        if user and user.is_authenticated and user.id == instance.id:
+            del representation['is_subscribed']
+        return representation
 
 
 class UserCreateSerializer(serializers.ModelSerializer):
