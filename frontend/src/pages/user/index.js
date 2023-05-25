@@ -74,9 +74,6 @@ const UserPage = ({ updateOrders }) => {
       })
   }, [])
 
-  console.log('User data:', user)
-  console.log('User context:', userContext)
-
 
   return <Main>
     <Container className={styles.container}>
