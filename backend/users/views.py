@@ -35,9 +35,19 @@ class UsersViewSet(UserViewSet):
     permission_classes = (IsAuthenticated,)
 
     def get_serializer_class(self):
+        # if self.action == 'create':
         if self.request.method.lower() == 'post':
             return UserCreateSerializer
         return UserListSerializer
+
+    # def create(self, request, *args, **kwargs):
+    #     serializer = self.get_serializer(data=request.data)
+    #     serializer.is_valid(raise_exception=True)
+    #     user = serializer.save()
+    #     return Response(
+    #         UserListSerializer(user).data,
+    #         status=status.HTTP_201_CREATED
+    #     )
 
     def get_queryset(self):
         return User.objects.annotate(
@@ -51,6 +61,11 @@ class UsersViewSet(UserViewSet):
         ) if self.request.user.is_authenticated else User.objects.annotate(
             is_subscribed=Value(False)
         )
+        # )
+        # user_id = self.kwargs.get('pk')
+        # if user_id:
+        #     queryset = queryset.exclude(id=user_id)
+        # return queryset
 
     @action(
         detail=False,

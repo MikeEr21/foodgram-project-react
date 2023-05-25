@@ -222,6 +222,7 @@ class SubscribeSerializer(serializers.ModelSerializer):
             'recipes',
             'recipes_count'
         )
+        # read_only_fields = ('id', 'is_subscribed')
 
     def get_recipes(self, obj):
         request = self.context.get('request')
